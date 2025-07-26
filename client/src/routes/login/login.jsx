@@ -39,29 +39,44 @@ function Login() {
   return (
     <div className="login">
       <div className="formContainer">
-        <form onSubmit={handleSubmit}>
-          <h1>Welcome back</h1>
-          <input
-            name="username"
-            required
-            minLength={3}
-            maxLength={20}
-            type="text"
-            placeholder="Username"
-          />
-          <input
-            name="password"
-            type="password"
-            required
-            placeholder="Password"
-          />
-          <button disabled={isLoading}>Login</button>
-          {error && <span>{error}</span>}
-          <Link to="/register">{"Don't"} you have an account?</Link>
+        <form onSubmit={handleSubmit} className="loginForm">
+          <h1 className="loginTitle">Welcome Back</h1>
+          <p className="loginDesc">Log in to continue your real estate journey!</p>
+          <div className="formGroup">
+            <label htmlFor="username">Username</label>
+            <input
+              id="username"
+              name="username"
+              required
+              minLength={3}
+              maxLength={20}
+              type="text"
+              placeholder="Enter your username"
+              autoComplete="username"
+            />
+          </div>
+          <div className="formGroup">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              placeholder="Enter your password"
+              autoComplete="current-password"
+            />
+          </div>
+          <button className="loginBtn" disabled={isLoading}>
+            {isLoading ? <span className="spinner"></span> : "Login"}
+          </button>
+          {error && <div className="loginError">{error}</div>}
+          <div className="loginFooter">
+            <span>Don&apos;t have an account?</span> <Link to="/register">Register</Link>
+          </div>
         </form>
       </div>
       <div className="imgContainer">
-        <img src="/bg.png" alt="" />
+        <img src="/bg.png" alt="Background" />
       </div>
     </div>
   );

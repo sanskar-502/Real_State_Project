@@ -9,7 +9,14 @@ a {
   color: inherit;
 }
 
+html, body, #root {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
 body{
   font-family: "Lato", sans-serif;
-  overflow: hidden;
 }

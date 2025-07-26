@@ -6,13 +6,9 @@ export const register = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    // HASH THE PASSWORD
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    console.log(hashedPassword);
-
-    // CREATE A NEW USER AND SAVE TO DB
     const newUser = await prisma.user.create({
       data: {
         username,
@@ -33,6 +29,11 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const { username, password } = req.body;
 
+  // Validate input
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username and password are required!" });
+  }
+
   try {
     // CHECK IF THE USER EXISTS
 
@@ -51,7 +52,6 @@ export const login = async (req, res) => {
 
     // GENERATE COOKIE TOKEN AND SEND TO THE USER
 
-    // res.setHeader("Set-Cookie", "test=" + "myValue").json("success")
     const age = 1000 * 60 * 60 * 24 * 7;
 
     const token = jwt.sign(
@@ -65,14 +65,15 @@ export const login = async (req, res) => {
 
     const { password: userPassword, ...userInfo } = user;
 
-    res
-      .cookie("token", token, {
+    res.cookie("token", token, {
         httpOnly: true,
-        // secure:true,
+        // secure:true,   for production
         maxAge: age,
       })
       .status(200)
       .json(userInfo);
+
+   
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Failed to login!" });

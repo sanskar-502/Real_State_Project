@@ -1,0 +1,116 @@
+.aboutPage.yellow-theme {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 60vh;
+  padding: 0;
+  background: #fffbe7;
+
+  .about-hero {
+    width: 100%;
+    background: #fffbe7;
+    color: #1a202c;
+    padding: 48px 0 32px 0;
+    text-align: center;
+    margin-bottom: 0;
+    border-bottom: 2px solid #fece51;
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+      .brand {
+        color: #fff;
+        background: #fece51;
+        border-radius: 6px;
+        padding: 0 8px;
+      }
+    }
+    .about-tagline {
+      font-size: 1.3rem;
+      font-weight: 400;
+      margin: 0 auto;
+      max-width: 600px;
+    }
+  }
+
+  .about-main-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px rgba(254, 206, 81, 0.13);
+    margin: 32px 48px 32px 48px;
+    padding: 40px 48px 32px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    @media (max-width: 900px) {
+      margin: 24px 8px;
+      padding: 24px 8px 16px 8px;
+    }
+  }
+
+  .about-section {
+    h2 {
+      font-size: 1.6rem;
+      color: #eab308;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      font-size: 1.1rem;
+      color: #4a5568;
+      margin-bottom: 1.2rem;
+    }
+    ul {
+      margin: 1rem 0 2rem 1.5rem;
+      color: #eab308;
+      li {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        color: #1a202c;
+      }
+    }
+  }
+
+  .developer-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    .developer-info {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      background: #fffde4;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(254, 206, 81, 0.10);
+      padding: 20px 24px;
+      max-width: 400px;
+      margin: 0;
+      @media (max-width: 900px) {
+        max-width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 16px 8px;
+      }
+      img {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        margin-bottom: 0;
+        object-fit: cover;
+        border: 2px solid #fece51;
+        background: #fff;
+      }
+      h3 {
+        margin: 0;
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #eab308;
+      }
+      p {
+        margin: 0;
+        font-size: 1rem;
+        color: #4a5568;
+      }
+    }
+  }
+} 

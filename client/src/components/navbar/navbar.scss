@@ -1,10 +1,22 @@
 @import "../../responsive.scss";
 
 nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #fff;
   height: 100px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 32px;
+
+  @include md {
+    padding: 0 16px;
+  }
+  @include sm {
+    padding: 0 8px;
+  }
 
   a {
     transition: all 0.4s ease;
@@ -19,23 +31,26 @@ nav {
   }
 
   .left {
-    flex: 3;
+    flex: 1;
     display: flex;
     align-items: center;
     gap: 50px;
 
     .logo {
       font-weight: bold;
-      font-size: 20px;
+      font-size: 22px; // slightly increased
       display: flex;
       align-items: center;
       gap: 10px;
 
       img {
         width: 28px;
+        // margin-left: 0; // Reverted
+        // padding-left: 0; // Reverted
       }
 
       span {
+        font-size: 1.25em; // slightly increased
         @include md {
           display: none;
         }
@@ -45,22 +60,22 @@ nav {
         }
       }
     }
+    // Increase font size for main nav links
+    a {
+      font-size: 1.12em;
+    }
   }
   .right {
-    flex: 2;
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    background-color: #fcf5f3;
-    height: 100%;
-
-    @include md {
-      background-color: transparent;
-    }
 
     a {
-      padding: 12px 24px;
-      margin: 20px;
+      padding: 8px 16px;
+      margin: 0 8px;
+      display: flex;
+      align-items: center;
     }
 
     .user{
@@ -83,7 +98,7 @@ nav {
       }
 
       .profile{
-        padding: 12px 24px;
+        padding: 8px 16px;
         background-color: #fece51;
         cursor: pointer;
         border: none;
@@ -129,8 +144,8 @@ nav {
       position: absolute;
       top: 0;
       right: -50%;
-      background-color: black;
-      color: white;
+      background-color: #fff;
+      color: #111;
       height: 100vh;
       width: 50%;
       transition: all 1s ease;

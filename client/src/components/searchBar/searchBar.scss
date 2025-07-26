@@ -28,12 +28,12 @@
     }
   }
 
-  form {
+  .search-fields {
     border: 1px solid #999;
     display: flex;
     justify-content: space-between;
     height: 64px;
-    gap: 5px;
+    gap: 0;
 
     @include sm {
       flex-direction: column;
@@ -41,9 +41,18 @@
     }
 
     input {
-      border: none;
-      padding: 0px 10px;
-      width: 200px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fff;
+
+      &:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37,99,235,0.10);
+      }
 
       @include lg {
         padding: 0px 5px;

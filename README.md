@@ -244,4 +244,8 @@ For support and questions, please open an issue in the repository or contact the
 
 ---
 
+<<<<<<< HEAD
 **Note**: Make sure to replace placeholder values (like API keys, database URLs) with your actual credentials before running the application. 
+=======
+**Note**: Make sure to replace placeholder values (like API keys, database URLs) with your actual credentials before running the application. 
+>>>>>>> c5dc41a (adding features)
