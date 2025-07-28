@@ -1,8 +1,10 @@
 import { Server } from "socket.io";
 
-const io = new Server({
+const io = new Server(4000, {
   cors: {
     origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true
   },
 });
 
@@ -37,5 +39,3 @@ io.on("connection", (socket) => {
     removeUser(socket.id);
   });
 });
-
-io.listen("4000");

@@ -3,11 +3,12 @@ import jwt from "jsonwebtoken";
 
 export const getPosts = async (req, res) => {
   const query = req.query;
+  console.log("Search query received:", query);  
 
   try {
     const posts = await prisma.post.findMany({
       where: {
-        city: query.city || undefined,
+        city: query.city ? { contains: query.city, mode: 'insensitive' } : undefined,
         type: query.type || undefined,
         property: query.property || undefined,
         bedroom: parseInt(query.bedroom) || undefined,
@@ -22,8 +23,11 @@ export const getPosts = async (req, res) => {
     res.status(200).json(posts);
     // }, 3000);
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Failed to get posts" });
+    console.error("Error in getPosts:", err);
+    res.status(500).json({ 
+      message: "Failed to get posts",
+      error: err.message 
+    });
   }
 };
 
@@ -45,25 +49,32 @@ export const getPost = async (req, res) => {
 
     const token = req.cookies?.token;
 
-    if (token) {
-      jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, payload) => {
-        if (!err) {
-          const saved = await prisma.savedPost.findUnique({
-            where: {
-              userId_postId: {
-                postId: id,
-                userId: payload.id,
-              },
-            },
-          });
-          res.status(200).json({ ...post, isSaved: saved ? true : false });
-        }
-      });
+    if (!token) {
+      return res.status(200).json({ ...post, isSaved: false });
     }
-    res.status(200).json({ ...post, isSaved: false });
+
+    
+    jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, payload) => {
+      if (err) {
+        // Invalid token
+        return res.status(200).json({ ...post, isSaved: false });
+      }
+
+      // Valid token, check if post is saved
+      const saved = await prisma.savedPost.findUnique({
+        where: {
+          userId_postId: {
+            postId: id,
+            userId: payload.id,
+          },
+        },
+      });
+      return res.status(200).json({ ...post, isSaved: !!saved });
+    });
+
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Failed to get post" });
+    return res.status(500).json({ message: "Failed to get post" });
   }
 };
 

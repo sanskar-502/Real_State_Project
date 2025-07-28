@@ -1,23 +1,42 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState, useMemo } from "react";
 import "./chat.scss";
-import { AuthContext } from "../../context/AuthContext";
 import apiRequest from "../../lib/apiRequest";
 import { format } from "timeago.js";
 import { SocketContext } from "../../context/SocketContext";
 import { useNotificationStore } from "../../lib/notificationStore";
+import { AuthContext } from "../../context/AuthContext";
 
 function Chat({ chats }) {
   const [chat, setChat] = useState(null);
   const { currentUser } = useContext(AuthContext);
   const { socket } = useContext(SocketContext);
 
+  const uniqueChats = useMemo(() => {
+    if (!chats) return [];
+    
+    const chatsByReceiver = new Map();
+    
+    chats.forEach(chat => {
+      if (!chat.receiver || !chat.receiver.id) return; 
+      
+      const existingChat = chatsByReceiver.get(chat.receiver.id);
+      if (!existingChat || new Date(chat.updatedAt) > new Date(existingChat.updatedAt)) {
+        chatsByReceiver.set(chat.receiver.id, chat);
+      }
+    });
+    
+    return Array.from(chatsByReceiver.values());
+  }, [chats]);
+
   const messageEndRef = useRef();
 
   const decrease = useNotificationStore((state) => state.decrease);
 
   useEffect(() => {
-    messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [chat]);
+    if (chat?.messages?.length) {
+      messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [chat?.messages?.length]);
 
   const handleOpenChat = async (id, receiver) => {
     try {
@@ -77,23 +96,26 @@ function Chat({ chats }) {
     <div className="chat">
       <div className="messages">
         <h1>Messages</h1>
-        {chats?.map((c) => (
-          <div
-            className="message"
-            key={c.id}
-            style={{
-              backgroundColor:
-                c.seenBy.includes(currentUser.id) || chat?.id === c.id
-                  ? "white"
-                  : "#fecd514e",
-            }}
-            onClick={() => handleOpenChat(c.id, c.receiver)}
-          >
-            <img src={c.receiver.avatar || "/noavatar.jpg"} alt="" />
-            <span>{c.receiver.username}</span>
-            <p>{c.lastMessage}</p>
-          </div>
-        ))}
+        <div>
+          {uniqueChats.map((c) => (
+            <div
+              className={`message ${chat?.id === c.id ? 'active' : ''}`}
+              key={c.id}
+              onClick={() => handleOpenChat(c.id, c.receiver)}
+            >
+              <img src={c.receiver?.avatar || "/noavatar.jpg"} alt="" />
+              <div className="message-content">
+                <span>{c.receiver?.username || "User not found"}</span>
+                <p>{c.lastMessage || "Start a conversation..."}</p>
+              </div>
+              {c.receiver && !c.seenBy.includes(currentUser.id) && (
+                <div className="unread-indicator">
+                  {c.messages?.filter(m => !c.seenBy.includes(currentUser.id) && m.userId !== currentUser.id).length || 1}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
       {chat && (
         <div className="chatBox">

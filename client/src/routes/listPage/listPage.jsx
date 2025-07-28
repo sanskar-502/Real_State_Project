@@ -3,11 +3,39 @@ import Filter from "../../components/filter/Filter";
 import Card from "../../components/card/Card";
 import Map from "../../components/map/Map";
 import { Await, useLoaderData } from "react-router-dom";
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState, useEffect, useCallback } from "react";
+
+const PostList = ({ posts, onCountChange }) => {
+  useEffect(() => {
+    onCountChange(posts.length);
+  }, [posts.length, onCountChange]);
+
+  if (posts.length === 0) {
+    return (
+      <div className="noResults">
+        <div className="noResultsIcon">🏠</div>
+        <h3>No properties found</h3>
+        <p>Try adjusting your search criteria or browse all properties</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="propertyGrid">
+      {posts.map((post) => (
+        <Card key={post.id} item={post} />
+      ))}
+    </div>
+  );
+};
 
 function ListPage() {
   const data = useLoaderData();
   const [resultCount, setResultCount] = useState(0);
+
+  const handleCountChange = useCallback((count) => {
+    setResultCount(count);
+  }, []);
 
   return (
     <div className="listPage">
@@ -28,28 +56,12 @@ function ListPage() {
                 </div>
               }
             >
-              {(postResponse) => {
-                const posts = postResponse.data;
-                setResultCount(posts.length);
-                
-                if (posts.length === 0) {
-                  return (
-                    <div className="noResults">
-                      <div className="noResultsIcon">🏠</div>
-                      <h3>No properties found</h3>
-                      <p>Try adjusting your search criteria or browse all properties</p>
-                    </div>
-                  );
-                }
-
-                return (
-                  <div className="propertyGrid">
-                    {posts.map((post) => (
-                      <Card key={post.id} item={post} />
-                    ))}
-                  </div>
-                );
-              }}
+              {(postResponse) => (
+                <PostList 
+                  posts={postResponse.data} 
+                  onCountChange={handleCountChange}
+                />
+              )}
             </Await>
           </Suspense>
         </div>

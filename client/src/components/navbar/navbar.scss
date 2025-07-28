@@ -5,7 +5,7 @@ nav {
   top: 0;
   z-index: 1000;
   background: #fff;
-  height: 100px;
+  height: 75px;  
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -38,19 +38,17 @@ nav {
 
     .logo {
       font-weight: bold;
-      font-size: 22px; // slightly increased
+      font-size: 22px; 
       display: flex;
       align-items: center;
       gap: 10px;
 
       img {
         width: 28px;
-        // margin-left: 0; // Reverted
-        // padding-left: 0; // Reverted
       }
 
       span {
-        font-size: 1.25em; // slightly increased
+        font-size: 1.25em; 
         @include md {
           display: none;
         }
@@ -60,7 +58,7 @@ nav {
         }
       }
     }
-    // Increase font size for main nav links
+
     a {
       font-size: 1.12em;
     }

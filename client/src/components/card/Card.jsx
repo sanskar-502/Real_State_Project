@@ -1,7 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./card.scss";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import apiRequest from "../../lib/apiRequest";
 
 function Card({ item }) {
+  const navigate = useNavigate();
+  const { currentUser } = useContext(AuthContext);
   return (
     <div className="card">
       <Link to={`/${item.id}`} className="imageContainer">
@@ -56,7 +61,27 @@ function Card({ item }) {
             <div className="icon" title="Save to favorites">
               <img src="/save.png" alt="Save" />
             </div>
-            <div className="icon" title="Contact agent">
+            <div 
+              className="icon" 
+              title="Contact agent"
+              onClick={async (e) => {
+                e.preventDefault();
+                if (!currentUser) {
+                  navigate("/login");
+                  return;
+                }
+                try {
+                  
+                  const res = await apiRequest.post("/chats", {
+                    receiverId: item.userId
+                  });
+               
+                  navigate("/profile", { state: { openChat: res.data.id } });
+                } catch (err) {
+                  console.log(err);
+                }
+              }}
+            >
               <img src="/chat.png" alt="Chat" />
             </div>
           </div>

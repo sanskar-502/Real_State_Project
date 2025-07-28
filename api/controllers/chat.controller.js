@@ -12,23 +12,26 @@ export const getChats = async (req, res) => {
       },
     });
 
-    for (const chat of chats) {
-      const receiverId = chat.userIDs.find((id) => id !== tokenUserId);
+    const chatsWithReceivers = await Promise.all(
+      chats.map(async (chat) => {
+        const receiverId = chat.userIDs.find((id) => id !== tokenUserId);
+        if (!receiverId) return { ...chat, receiver: null };
 
-      const receiver = await prisma.user.findUnique({
-        where: {
-          id: receiverId,
-        },
-        select: {
-          id: true,
-          username: true,
-          avatar: true,
-        },
-      });
-      chat.receiver = receiver;
-    }
+        const receiver = await prisma.user.findUnique({
+          where: {
+            id: receiverId,
+          },
+          select: {
+            id: true,
+            username: true,
+            avatar: true,
+          },
+        });
+        return { ...chat, receiver };
+      })
+    );
 
-    res.status(200).json(chats);
+    res.status(200).json(chatsWithReceivers);
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Failed to get chats!" });
@@ -74,13 +77,33 @@ export const getChat = async (req, res) => {
 
 export const addChat = async (req, res) => {
   const tokenUserId = req.userId;
+  const receiverId = req.body.receiverId;
+
+  if (!receiverId) {
+    return res.status(400).json({ message: "Receiver ID is required" });
+  }
+
   try {
-    const newChat = await prisma.chat.create({
-      data: {
-        userIDs: [tokenUserId, req.body.receiverId],
+    const existingChat = await prisma.chat.findFirst({
+      where: {
+        userIDs: {
+          hasEvery: [tokenUserId, receiverId],
+        },
       },
     });
-    res.status(200).json(newChat);
+
+    if (existingChat) {
+      return res.status(200).json(existingChat);
+    }
+
+
+    const newChat = await prisma.chat.create({
+      data: {
+        userIDs: [tokenUserId, receiverId],
+      },
+    });
+    
+    res.status(201).json(newChat);
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Failed to add chat!" });

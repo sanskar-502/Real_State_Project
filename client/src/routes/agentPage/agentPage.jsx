@@ -3,25 +3,25 @@ import { FaEnvelope, FaPhone } from "react-icons/fa";
 
 const agents = [
   {
-    name: "John Doe",
+    name: "Shikhar Sinha",
     photo: "/noavatar.jpg",
-    email: "john@realestate.com",
-    phone: "+1 234 567 891",
-    bio: "John is a top-performing agent with over 10 years of experience helping clients find their dream homes.",
+    email: "shikhar@realestate.com",
+    phone: "+91 9876543210",
+    bio: "Shikhar is a top-performing agent with over 10 years of experience helping clients find their dream homes.",
   },
   {
-    name: "Jane Smith",
+    name: "Sachin Kumar",
     photo: "/noavatar.jpg",
-    email: "jane@realestate.com",
-    phone: "+1 234 567 892",
-    bio: "Jane specializes in luxury properties and is known for her attention to detail and client satisfaction.",
+    email: "sachin@realestate.com",
+    phone: "+91 9876543210",
+    bio: "Sachin specializes in luxury properties and is known for her attention to detail and client satisfaction.",
   },
   {
-    name: "Alex Lee",
+    name: "Anmol Kumar",
     photo: "/noavatar.jpg",
-    email: "alex@realestate.com",
-    phone: "+1 234 567 893",
-    bio: "Alex is passionate about real estate and provides expert guidance for first-time home buyers.",
+    email: "anmol@realestate.com",
+    phone: "+91 9876543210",
+    bio: "Anmol is passionate about real estate and provides expert guidance for first-time home buyers.",
   },
 ];
 

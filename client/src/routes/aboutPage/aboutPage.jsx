@@ -1,4 +1,3 @@
-import React from "react";
 import "./aboutPage.scss";
 
 function AboutPage() {
@@ -36,7 +35,7 @@ function AboutPage() {
         <section className="about-section developer-section">
           <h2>Developer</h2>
           <div className="developer-info">
-            <img src="/noavatar.jpg" alt="Sanskar Dubey" />
+            <img src="/profilePic.jpg" alt="Sanskar Dubey" />
             <div>
               <h3>Sanskar Dubey</h3>
               <p>Founder & Full Stack Developer</p>

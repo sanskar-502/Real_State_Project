@@ -29,13 +29,12 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const { username, password } = req.body;
 
-  // Validate input
+
   if (!username || !password) {
     return res.status(400).json({ message: "Username and password are required!" });
   }
 
   try {
-    // CHECK IF THE USER EXISTS
 
     const user = await prisma.user.findUnique({
       where: { username },
@@ -43,14 +42,12 @@ export const login = async (req, res) => {
 
     if (!user) return res.status(400).json({ message: "Invalid Credentials!" });
 
-    // CHECK IF THE PASSWORD IS CORRECT
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid)
       return res.status(400).json({ message: "Invalid Credentials!" });
 
-    // GENERATE COOKIE TOKEN AND SEND TO THE USER
 
     const age = 1000 * 60 * 60 * 24 * 7;
 

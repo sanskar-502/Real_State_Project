@@ -5,11 +5,10 @@ import apiRequest from "../../lib/apiRequest";
 import { Await, Link, useLoaderData, useNavigate } from "react-router-dom";
 import { Suspense, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { FaUser, FaList, FaBookmark, FaComments } from "react-icons/fa";
+import { FaList, FaBookmark, FaComments } from "react-icons/fa";
 
 function ProfilePage() {
   const data = useLoaderData();
-  console.log("Profile page loader data:", data);
   const { updateUser, currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
