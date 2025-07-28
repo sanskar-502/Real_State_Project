@@ -1,30 +1,161 @@
 @import "../../responsive.scss";
 
 .listPage {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   display: flex;
-  height: 100%;
+  gap: 0;
+
+  @include md {
+    flex-direction: column;
+  }
 
   .listContainer {
-    flex: 3;
-    height: 100%;
+    flex: 1;
+    margin: 0 auto;
+    padding: 32px 24px;
+    width: 100%;
 
-    .wrapper{
-      height: 100%;
-      padding-right: 50px;
+    @include md {
+      padding: 24px 16px;
+    }
+
+    @include sm {
+      padding: 16px 8px;
+    }
+
+    .wrapper {
       display: flex;
       flex-direction: column;
-      gap: 50px;
-      overflow-y: scroll;
-      padding-bottom: 50px;
+      gap: 32px;
+      margin: 0 auto;
+
+      @include md {
+        gap: 24px;
+      }
+
+      .loadingState {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 400px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        
+        .loadingSpinner {
+          width: 40px;
+          height: 40px;
+          border: 3px solid #e2e8f0;
+          border-top: 3px solid #3bb19b;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      }
+
+      .errorState {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 400px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        color: #dc2626;
+        font-size: 1.1rem;
+        text-align: center;
+        padding: 24px;
+      }
+
+      .noResults {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 400px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        text-align: center;
+        padding: 48px 24px;
+
+        .noResultsIcon {
+          font-size: 4rem;
+          margin-bottom: 16px;
+          opacity: 0.5;
+        }
+
+        h3 {
+          font-size: 1.5rem;
+          color: #1a3c40;
+          margin-bottom: 8px;
+        }
+
+        p {
+          color: #64748b;
+          font-size: 1rem;
+        }
+      }
+
+      .propertyGrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 24px;
+
+        @include md {
+          grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+          gap: 18px;
+        }
+
+        @include sm {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+      }
     }
   }
-  .mapContainer {
-    flex: 2;
-    height: 100%;
-    background-color: #fcf5f3;
 
-    @include md{
+  .mapContainer {
+    flex: 1;
+    min-height: 100vh;
+    background: #fff;
+    position: sticky;
+    top: 0;
+    right: 0;
+
+    @include md {
       display: none;
+    }
+
+    .mapWrapper {
+      height: 100vh;
+      position: relative;
+      
+      .mapToggle {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        z-index: 1000;
+        background: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: #1a3c40;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background: #f8fafc;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+      }
     }
   }
 }

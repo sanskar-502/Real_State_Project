@@ -5,12 +5,12 @@ import apiRequest from "../../lib/apiRequest";
 import { Await, Link, useLoaderData, useNavigate } from "react-router-dom";
 import { Suspense, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { FaUser, FaList, FaBookmark, FaComments } from "react-icons/fa";
 
 function ProfilePage() {
   const data = useLoaderData();
-
+  console.log("Profile page loader data:", data);
   const { updateUser, currentUser } = useContext(AuthContext);
-
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -22,33 +22,32 @@ function ProfilePage() {
       console.log(err);
     }
   };
+
   return (
-    <div className="profilePage">
-      <div className="details">
-        <div className="wrapper">
-          <div className="title">
-            <h1>User Information</h1>
+    <div className="profilePage twocolumns">
+      <div className="profileColumn">
+        <div className="userCard">
+          <div className="avatarWrapper">
+            <img src={currentUser.avatar || "noavatar.jpg"} alt="Avatar" />
+          </div>
+          <div className="userInfo">
+            <h2>{currentUser.username}</h2>
+            <p>{currentUser.email}</p>
+          </div>
+          <div className="userActions">
             <Link to="/profile/update">
-              <button>Update Profile</button>
+              <button className="primary">Update Profile</button>
             </Link>
+            <button className="secondary" onClick={handleLogout}>Logout</button>
           </div>
-          <div className="info">
-            <span>
-              Avatar:
-              <img src={currentUser.avatar || "noavatar.jpg"} alt="" />
-            </span>
-            <span>
-              Username: <b>{currentUser.username}</b>
-            </span>
-            <span>
-              E-mail: <b>{currentUser.email}</b>
-            </span>
-            <button onClick={handleLogout}>Logout</button>
-          </div>
-          <div className="title">
+        </div>
+
+        <section className="listCard">
+          <div className="sectionHeader">
+            <FaList className="sectionIcon" />
             <h1>My List</h1>
             <Link to="/add">
-              <button>Create New Post</button>
+              <button className="primary">Create New Post</button>
             </Link>
           </div>
           <Suspense fallback={<p>Loading...</p>}>
@@ -59,7 +58,11 @@ function ProfilePage() {
               {(postResponse) => <List posts={postResponse.data.userPosts} />}
             </Await>
           </Suspense>
-          <div className="title">
+        </section>
+
+        <section className="listCard">
+          <div className="sectionHeader">
+            <FaBookmark className="sectionIcon" />
             <h1>Saved List</h1>
           </div>
           <Suspense fallback={<p>Loading...</p>}>
@@ -67,19 +70,26 @@ function ProfilePage() {
               resolve={data.postResponse}
               errorElement={<p>Error loading posts!</p>}
             >
-              {(postResponse) => <List posts={postResponse.data.savedPosts} />}
+              {(postResponse) => {
+                console.log("Saved posts in profile:", postResponse.data.savedPosts);
+                return <List posts={postResponse.data.savedPosts} />;
+              }}
             </Await>
           </Suspense>
-        </div>
+        </section>
       </div>
-      <div className="chatContainer">
-        <div className="wrapper">
+      <div className="chatColumn">
+        <div className="chatCard">
+          <div className="sectionHeader">
+            <FaComments className="sectionIcon" />
+            <h1>Chats</h1>
+          </div>
           <Suspense fallback={<p>Loading...</p>}>
             <Await
               resolve={data.chatResponse}
               errorElement={<p>Error loading chats!</p>}
             >
-              {(chatResponse) => <Chat chats={chatResponse.data}/>}
+              {(chatResponse) => <Chat chats={chatResponse.data}/>} 
             </Await>
           </Suspense>
         </div>

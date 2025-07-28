@@ -1,76 +1,283 @@
+@import "../../responsive.scss";
+
 .newPostPage {
-  height: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  padding: 32px 0;
   display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  justify-content: center;
+
+  @include md {
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px 16px;
+  }
+
+  @include sm {
+    padding: 16px 8px;
+  }
 
   .formContainer {
-    flex: 3;
-    overflow: scroll;
+    background: #fff;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 800px;
+    width: 100%;
+    flex: 1;
+
+    @include md {
+      padding: 32px 24px;
+    }
+
+    @include sm {
+      padding: 24px 16px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #1a3c40;
+      margin-bottom: 32px;
+      text-align: center;
+      background: linear-gradient(135deg, #1a3c40 0%, #3bb19b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+
+      @include md {
+        font-size: 2rem;
+        margin-bottom: 24px;
+      }
+    }
 
     .wrapper {
-      margin: 30px 50px 100px 0px;
-
       form {
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+
+        @include sm {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
 
         .item {
-          width: 30%;
           display: flex;
           flex-direction: column;
-          gap: 5px;
+          gap: 8px;
 
           label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1a3c40;
+            margin-bottom: 4px;
           }
 
-          input {
-            padding: 20px;
-            border-radius: 5px;
-            border: 1px solid gray;
+          input, select {
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+            color: #1a3c40;
+
+            &:focus {
+              outline: none;
+              border-color: #3bb19b;
+              background: #fff;
+              box-shadow: 0 0 0 3px rgba(59, 177, 155, 0.1);
+            }
+
+            &::placeholder {
+              color: #94a3b8;
+            }
           }
 
           select {
-            padding: 19px;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+            padding-right: 48px;
+            appearance: none;
           }
 
           &.description {
-            width: 100%;
-            height: 320px;
+            grid-column: 1 / -1;
+            height: auto;
 
-            .quill > .ql-container > .ql-editor{
-              height: 200px;
-              font-size: 16px;
+            .quill {
+              border: 2px solid #e2e8f0;
+              border-radius: 12px;
+              overflow: hidden;
+              transition: all 0.3s ease;
+
+              &:focus-within {
+                border-color: #3bb19b;
+                box-shadow: 0 0 0 3px rgba(59, 177, 155, 0.1);
+              }
+
+              .ql-toolbar {
+                border: none;
+                border-bottom: 1px solid #e2e8f0;
+                background: #f8fafc;
+                padding: 12px 16px;
+              }
+
+              .ql-container {
+                border: none;
+                background: #fff;
+
+                .ql-editor {
+                  min-height: 200px;
+                  font-size: 1rem;
+                  line-height: 1.6;
+                  color: #1a3c40;
+                  padding: 20px;
+
+                  &::before {
+                    color: #94a3b8;
+                  }
+                }
+              }
             }
           }
         }
+
         .sendButton {
-          width: 30%;
-          border-radius: 5px;
+          grid-column: 1 / -1;
+          padding: 18px 32px;
           border: none;
-          background-color: teal;
-          color: white;
-          font-weight: bold;
+          border-radius: 12px;
+          background: linear-gradient(135deg, #1a3c40 0%, #3bb19b 100%);
+          color: #fff;
+          font-size: 1.1rem;
+          font-weight: 600;
           cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 16px rgba(59, 177, 155, 0.2);
+          margin-top: 16px;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 177, 155, 0.3);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+
+          @include sm {
+            padding: 16px 24px;
+            font-size: 1rem;
+          }
+        }
+
+        .error {
+          grid-column: 1 / -1;
+          color: #dc2626;
+          background: #fef2f2;
+          border: 1px solid #fecaca;
+          border-radius: 8px;
+          padding: 12px 16px;
+          font-size: 0.9rem;
+          text-align: center;
+          margin-top: 8px;
         }
       }
     }
   }
 
   .sideContainer {
-    flex: 2;
-    background-color: #fcf5f3;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-    justify-content: center;
+    background: #fff;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    border-radius: 20px;
+    padding: 40px 32px;
+    max-width: 400px;
+    width: 100%;
+    height: fit-content;
+    position: sticky;
+    top: 32px;
 
-    img {
-      width: 50%;
-      height: 180px;
-      object-fit: cover;
-      border-radius: 5px;
+    @include md {
+      position: static;
+      max-width: 100%;
+      padding: 32px 24px;
+    }
+
+    @include sm {
+      padding: 24px 16px;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1a3c40;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .imageGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+
+      img {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+    }
+
+    .uploadSection {
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+
+      &:hover {
+        border-color: #3bb19b;
+        background: #f0fdfa;
+      }
+
+      .uploadIcon {
+        width: 48px;
+        height: 48px;
+        margin: 0 auto 16px;
+        background: linear-gradient(135deg, #1a3c40 0%, #3bb19b 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 1.5rem;
+      }
+
+      .uploadText {
+        color: #64748b;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+      }
+
+      .uploadHint {
+        color: #94a3b8;
+        font-size: 0.8rem;
+      }
     }
   }
 }

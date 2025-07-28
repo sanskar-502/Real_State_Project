@@ -82,16 +82,18 @@ nav {
       display: flex;
       align-items: center;
       font-weight: bold;
+      gap: 10px;
 
       img{
         width: 40px;
         height: 40px;
         border-radius: 50%;
         object-fit: cover;
-        margin-right: 20px;
       }
 
       span{
+        display: flex;
+        align-items: center;
         @include sm{
           display: none;
         }
@@ -103,6 +105,8 @@ nav {
         cursor: pointer;
         border: none;
         position: relative;
+        display: flex;
+        align-items: center;
         
         .notification{
           position: absolute;

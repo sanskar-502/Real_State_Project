@@ -1,8 +1,146 @@
 @import "../../responsive.scss";
 
+.twocolumns {
+  display: flex;
+  gap: 40px;
+  min-height: 100vh;
+  @include md {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+.profileColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  min-width: 0;
+}
+
+.chatColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-width: 0;
+  @include md {
+    margin-top: 0;
+  }
+}
+
+.userCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 4px 32px rgba(30,41,59,0.10);
+  padding: 32px 24px;
+  margin-bottom: 32px;
+
+  .avatarWrapper {
+    margin-bottom: 16px;
+    img {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 4px solid #fece51;
+      box-shadow: 0 4px 16px rgba(254,206,81,0.16);
+      object-fit: cover;
+    }
+  }
+  .userInfo {
+    text-align: center;
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1a202c;
+    }
+    p {
+      margin: 4px 0 0 0;
+      color: #374151;
+      font-size: 1rem;
+    }
+  }
+  .userActions {
+    display: flex;
+    gap: 16px;
+    margin-top: 20px;
+    .primary, .secondary {
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .primary {
+      background: #2563eb;
+      color: #fff;
+      &:hover { background: #1d4ed8; }
+    }
+    .secondary {
+      background: #f3f4f6;
+      color: #1a202c;
+      &:hover { background: #e5e7eb; }
+    }
+  }
+}
+
+.listCard, .chatCard {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 4px 32px rgba(30,41,59,0.10);
+  padding: 32px 24px;
+  margin-bottom: 32px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  h1 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin: 0;
+  }
+  .sectionIcon {
+    font-size: 1.5rem;
+    color: #2563eb;
+  }
+  button.primary {
+    margin-left: auto;
+  }
+}
+
+button.primary {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 8px 20px;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  margin-left: auto;
+  &:hover {
+    background: #1d4ed8;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.16);
+  }
+}
+
 .profilePage {
+  margin-top: 32px;
   display: flex;
   height: 100%;
+  background: linear-gradient(120deg, #f8fafc 0%, #e0e7ef 100%);
 
   @include md{
     flex-direction: column;
@@ -20,18 +158,43 @@
     }
 
     .wrapper{
-      padding-right: 50px;
+      padding-right: 100px;
+      margin-left: 50px;
       display: flex;
       flex-direction: column;
       gap: 50px;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 4px 32px rgba(30,41,59,0.10);
+      padding: 40px 100px 40px 50px;
+      margin-top: 40px;
+      margin-bottom: 40px;
+      @include lg {
+        padding-right: 50px;
+        margin-left: 36px;
+        padding-left: 36px;
+      }
+      @include md {
+        padding-right: 16px;
+        margin-left: 24px;
+        padding-left: 24px;
+      }
+      @include sm {
+        padding-right: 4px;
+        margin-left: 12px;
+        padding-left: 12px;
+      }
 
       .title{
         display: flex;
         align-items: center;
         justify-content: space-between;
+        margin-bottom: 12px;
 
         h1{
-          font-weight: 300;
+          font-weight: 600;
+          font-size: 2rem;
+          color: #1a202c;
         }
 
         button{
@@ -39,6 +202,15 @@
           background-color: #fece51;
           cursor: pointer;
           border: none;
+          border-radius: 8px;
+          font-weight: 600;
+          font-size: 1rem;
+          box-shadow: 0 2px 8px rgba(254,206,81,0.08);
+          transition: background 0.2s, box-shadow 0.2s;
+          &:hover {
+            background: #ffd877;
+            box-shadow: 0 4px 16px rgba(254,206,81,0.16);
+          }
         }
       }
 
@@ -46,28 +218,46 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 24px 20px;
+        box-shadow: 0 2px 8px rgba(30,41,59,0.04);
+        margin-bottom: 24px;
 
         span{
           display: flex;
           align-items: center;
           gap: 20px;
+          font-size: 1.1rem;
+          color: #374151;
         }
 
         button{
-          width: 100px;
-          background-color: teal;
+          width: 120px;
+          background-color: #2563eb;
           border: none;
           color: white;
-          padding: 10px 20px;
+          padding: 12px 24px;
           cursor: pointer;
-          border-radius: 5px;
+          border-radius: 8px;
+          font-weight: 600;
+          font-size: 1rem;
+          margin-top: 12px;
+          box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+          transition: background 0.2s, box-shadow 0.2s;
+          &:hover {
+            background: #1d4ed8;
+            box-shadow: 0 4px 16px rgba(37,99,235,0.16);
+          }
         }
 
         img{
-          width: 40px;
-          height: 40px;
+          width: 64px;
+          height: 64px;
           border-radius: 50%;
           object-fit: cover;
+          border: 3px solid #fece51;
+          box-shadow: 0 2px 8px rgba(254,206,81,0.12);
         }
       }
     }
@@ -76,15 +266,26 @@
     flex: 2;
     background-color: #fcf5f3;
     height: 100%;
-
     @include md{
       flex:none;
       height: max-content;
     }
-
+    .wrapper, .chatCard {
+      // Remove old card styles if present
+      background: none;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
+      margin: 0;
+    }
     .wrapper{
       padding: 0px 20px;
       height: 100%;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 4px 32px rgba(30,41,59,0.10);
+      margin-top: 40px;
+      margin-bottom: 40px;
     }
   }
 }
