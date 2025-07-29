@@ -87,7 +87,7 @@ full-stack-estate/
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/sanskar-502/Real_State_Project.git
    cd full-stack-estate
    ```
 
@@ -237,15 +237,3 @@ This project is licensed under the ISC License.
 ## 👨‍💻 Author
 
 Real Estate Platform - A modern full-stack real estate application
-
-## 🆘 Support
-
-For support and questions, please open an issue in the repository or contact the development team.
-
----
-
-<<<<<<< HEAD
-**Note**: Make sure to replace placeholder values (like API keys, database URLs) with your actual credentials before running the application. 
-=======
-**Note**: Make sure to replace placeholder values (like API keys, database URLs) with your actual credentials before running the application. 
->>>>>>> c5dc41a (adding features)
