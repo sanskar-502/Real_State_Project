@@ -100,7 +100,7 @@ src/
 ### Environment Variables
 Create a `.env` file in the client directory:
 ```env
-VITE_API_URL=http://localhost:8800
+VITE_API_URL=http://localhost:8800/api
 VITE_SOCKET_URL=http://localhost:4000
 ```
 
