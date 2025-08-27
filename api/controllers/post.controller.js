@@ -10,10 +10,15 @@ export const getPosts = async (req, res) => {
     const where = {};
 
     if (query.city) {
-      where.OR = [
-        { city: { contains: query.city, mode: 'insensitive' } },
-        { city: { contains: query.city === 'bangalore' ? 'bengaluru' : (query.city === 'bengaluru' ? 'bangalore' : ''), mode: 'insensitive' } }
-      ];
+      const city = query.city.toLowerCase();
+      if (city === 'bangalore' || city === 'bengaluru') {
+        where.OR = [
+          { city: { contains: 'bangalore', mode: 'insensitive' } },
+          { city: { contains: 'bengaluru', mode: 'insensitive' } }
+        ];
+      } else {
+        where.city = { contains: query.city, mode: 'insensitive' };
+      }
     }
 
     if (query.type) {
