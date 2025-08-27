@@ -9,11 +9,22 @@ export const SocketContextProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    setSocket(io("http://localhost:4000"));
+    // This reads the URL from your environment variables (.env file or Render dashboard)
+    const socketURL = import.meta.env.VITE_SOCKET_URL;
+    if (socketURL) {
+      setSocket(io(socketURL));
+    }
+
+    // Clean up the connection when the component unmounts
+    return () => {
+      socket?.disconnect();
+    };
   }, []);
 
   useEffect(() => {
-  currentUser && socket?.emit("newUser", currentUser.id);
+    if (currentUser && socket) {
+      socket.emit("newUser", currentUser.id);
+    }
   }, [currentUser, socket]);
 
   return (
