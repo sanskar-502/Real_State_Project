@@ -24,6 +24,25 @@ export const getUser = async (req, res) => {
   }
 };
 
+export const checkSavedPost = async (req, res) => {
+  const postId = req.params.postId;
+  const userId = req.userId;
+
+  try {
+    const savedPost = await prisma.savedPost.findFirst({
+      where: {
+        userId,
+        postId,
+      },
+    });
+    
+    res.status(200).json({ isSaved: !!savedPost });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Failed to check saved status!" });
+  }
+};
+
 export const updateUser = async (req, res) => {
   const id = req.params.id;
   const tokenUserId = req.userId;
@@ -80,55 +99,149 @@ export const savePost = async (req, res) => {
   const postId = req.body.postId;
   const tokenUserId = req.userId;
 
+  if (!postId) {
+    return res.status(400).json({ message: "Post ID is required" });
+  }
+
   try {
-    const savedPost = await prisma.savedPost.findUnique({
+    // First check if post exists
+    const post = await prisma.post.findUnique({
+      where: { id: postId }
+    });
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Check if post is already saved
+    const savedPost = await prisma.savedPost.findFirst({
       where: {
-        userId_postId: {
-          userId: tokenUserId,
-          postId,
-        },
-      },
+        AND: [
+          { userId: tokenUserId },
+          { postId: postId }
+        ]
+      }
     });
 
     if (savedPost) {
+      // Post is already saved, so unsave it
       await prisma.savedPost.delete({
         where: {
-          id: savedPost.id,
-        },
+          id: savedPost.id
+        }
       });
-      res.status(200).json({ message: "Post removed from saved list" });
-    } else {
-      await prisma.savedPost.create({
-        data: {
-          userId: tokenUserId,
-          postId,
-        },
+
+      return res.status(200).json({ 
+        message: "Post removed from saved list",
+        isSaved: false
       });
-      res.status(200).json({ message: "Post saved" });
     }
+
+    // Save the post
+    await prisma.savedPost.create({
+      data: {
+        userId: tokenUserId,
+        postId: postId
+      }
+    });
+
+    return res.status(200).json({ 
+      message: "Post saved successfully",
+      isSaved: true
+    });
+
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Failed to delete users!" });
+    console.error("Error in savePost:", err);
+    res.status(500).json({ message: "Failed to save/unsave post!" });
   }
 };
 
 export const profilePosts = async (req, res) => {
   const tokenUserId = req.userId;
+
   try {
-    const userPosts = await prisma.post.findMany({
-      where: { userId: tokenUserId },
-    });
-    const saved = await prisma.savedPost.findMany({
-      where: { userId: tokenUserId },
-      include: {
-        post: true,
-      },
+    // Get user's posts and saved posts in parallel
+    const [userPosts, savedPostsData] = await Promise.all([
+      prisma.post.findMany({
+        where: { userId: tokenUserId },
+        include: {
+          user: {
+            select: {
+              username: true,
+              avatar: true
+            }
+          },
+          postDetail: true
+        }
+      }),
+      prisma.savedPost.findMany({
+        where: { userId: tokenUserId },
+        include: {
+          post: {
+            include: {
+              user: {
+                select: {
+                  username: true,
+                  avatar: true
+                }
+              },
+              postDetail: true
+            }
+          }
+        }
+      })
+    ]);
+
+    // Extract and expand posts from savedPosts data
+    const savedPosts = savedPostsData
+      .filter(item => item.post !== null)
+      .map(item => ({
+        id: item.post.id,
+        title: item.post.title,
+        price: item.post.price,
+        images: item.post.images,
+        address: item.post.address,
+        city: item.post.city,
+        bedroom: item.post.bedroom,
+        bathroom: item.post.bathroom,
+        latitude: item.post.latitude,
+        longitude: item.post.longitude,
+        type: item.post.type,
+        property: item.post.property,
+        createdAt: item.post.createdAt,
+        userId: item.post.userId,
+        user: item.post.user,
+        postDetail: item.post.postDetail
+      }));
+
+    // Get user's posts with full details
+    const userPostsWithDetails = await Promise.all(
+      userPosts.map(async (post) => {
+        const postDetail = await prisma.postDetail.findUnique({
+          where: { postId: post.id }
+        });
+        return {
+          ...post,
+          postDetail
+        };
+      })
+    );
+
+    console.log('Profile data:', {
+      userPostsCount: userPostsWithDetails.length,
+      savedPostsCount: savedPosts.length,
+      userPosts: JSON.stringify(userPostsWithDetails, null, 2),
+      savedPosts: JSON.stringify(savedPosts, null, 2)
     });
 
-    const savedPosts = saved.map((item) => item.post);
-    res.status(200).json({ userPosts, savedPosts });
+    res.status(200).json({
+      data: {
+        userPosts: userPostsWithDetails,
+        savedPosts: savedPosts
+      }
+    });
   } catch (err) {
-    console.log(err);
+    console.error("Error in profilePosts:", err);
     res.status(500).json({ message: "Failed to get profile posts!" });
   }
 };

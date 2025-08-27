@@ -13,16 +13,30 @@ function SinglePage() {
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const handleSendMessage = async () => {
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
+    try {
+      const res = await apiRequest.post("/chats", { receiverId: post.user.id });
+      navigate("/profile");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const handleSave = async () => {
     if (!currentUser) {
       navigate("/login");
+      return;
     }
-    setSaved((prev) => !prev);
+    
     try {
-      await apiRequest.post("/users/save", { postId: post.id });
+      const response = await apiRequest.post("/users/save", { postId: post.id });
+      setSaved(response.data.isSaved);
     } catch (err) {
-      console.log(err);
-      setSaved((prev) => !prev);
+      console.error("Error saving post:", err);
     }
   };
 
@@ -138,7 +152,7 @@ function SinglePage() {
             <Map items={[post]} />
           </div>
           <div className="buttons">
-            <button>
+            <button onClick={handleSendMessage}>
               <img src="/chat.png" alt="" />
               Send a Message
             </button>

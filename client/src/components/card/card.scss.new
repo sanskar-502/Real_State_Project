@@ -10,8 +10,6 @@
   min-width: 280px;
   display: flex;
   flex-direction: column;
-  text-decoration: none;
-  color: inherit;
 
   &:hover {
     transform: translateY(-4px);
@@ -126,8 +124,9 @@
         color: #3bb19b;
       }
 
-      span {
+      a {
         color: inherit;
+        text-decoration: none;
       }
     }
 
@@ -245,39 +244,37 @@
           background: #fff;
           position: relative;
           padding: 0;
+          outline: none;
 
           img {
             width: 20px;
             height: 20px;
             object-fit: contain;
-          }
+            transition: all 0.3s ease;
 
-          @include sm {
-            width: 32px;
-            height: 32px;
-
-            img {
+            @include sm {
               width: 16px;
               height: 16px;
             }
           }
 
+          @include sm {
+            width: 32px;
+            height: 32px;
+          }
+
           &:hover {
             transform: translateY(-2px);
-            background: linear-gradient(90deg, #3bb19b 0%, #1a3c40 100%);
-            box-shadow: 0 4px 16px rgba(59,177,155,0.12);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             border-color: #3bb19b;
-            img {
-              filter: brightness(0) invert(1);
-            }
           }
 
           &.saved {
             border-color: #3bb19b;
-            background: linear-gradient(90deg, #1a3c40 0%, #3bb19b 100%);
-            box-shadow: 0 2px 8px rgba(59,177,155,0.12);
+            background: #e6f7f4;
+            
             img {
-              filter: brightness(0) invert(1);
+              filter: invert(51%) sepia(98%) saturate(396%) hue-rotate(127deg) brightness(87%) contrast(88%);
             }
           }
 

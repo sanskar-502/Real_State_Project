@@ -43,9 +43,9 @@ function NewPostPage() {
           pet: inputs.pet,
           income: inputs.income,
           size: parseInt(inputs.size),
-          school: parseInt(inputs.school),
-          bus: parseInt(inputs.bus),
-          restaurant: parseInt(inputs.restaurant),
+          school: parseFloat(inputs.school),
+          bus: parseFloat(inputs.bus),
+          restaurant: parseFloat(inputs.restaurant),
         },
       });
       navigate("/" + res.data.id);
@@ -217,35 +217,38 @@ function NewPostPage() {
 
             {/* Nearby Amenities */}
             <div className="item">
-              <label htmlFor="school">Nearby Schools</label>
+              <label htmlFor="school">Distance to Nearest School (m)</label>
               <input 
                 min={0} 
+                step="0.1"
                 id="school" 
                 name="school" 
                 type="number" 
-                placeholder="Number of nearby schools"
+                placeholder="Distance to nearest school in meters"
               />
             </div>
 
             <div className="item">
-              <label htmlFor="bus">Bus Stops</label>
+              <label htmlFor="bus">Distance to Nearest Bus Stop (m)</label>
               <input 
                 min={0} 
+                step="0.1"
                 id="bus" 
                 name="bus" 
                 type="number" 
-                placeholder="Number of bus stops nearby"
+                placeholder="Distance to nearest bus stop in meters"
               />
             </div>
 
             <div className="item">
-              <label htmlFor="restaurant">Restaurants</label>
+              <label htmlFor="restaurant">Distance to Nearest Restaurant (m)</label>
               <input 
                 min={0} 
+                step="0.1"
                 id="restaurant" 
                 name="restaurant" 
                 type="number" 
-                placeholder="Number of nearby restaurants"
+                placeholder="Distance to nearest restaurant in meters"
               />
             </div>
 

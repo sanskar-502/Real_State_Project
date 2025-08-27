@@ -54,7 +54,12 @@ function ProfilePage() {
               resolve={data.postResponse}
               errorElement={<p>Error loading posts!</p>}
             >
-              {(postResponse) => <List posts={postResponse.data.userPosts} />}
+              {(postResponse) => {
+                console.log("User posts response:", postResponse);
+                const userPosts = postResponse?.data?.data?.userPosts || [];
+                console.log("User posts:", userPosts);
+                return <List posts={userPosts} />;
+              }}
             </Await>
           </Suspense>
         </section>
@@ -70,8 +75,25 @@ function ProfilePage() {
               errorElement={<p>Error loading posts!</p>}
             >
               {(postResponse) => {
-                console.log("Saved posts in profile:", postResponse.data.savedPosts);
-                return <List posts={postResponse.data.savedPosts} />;
+                console.log("Full postResponse:", postResponse);
+                console.log("Response data:", postResponse?.data?.data);
+                
+                let savedPosts = [];
+                try {
+                  if (typeof postResponse?.data?.data?.savedPosts === 'string') {
+                    savedPosts = JSON.parse(postResponse.data.data.savedPosts);
+                  } else if (Array.isArray(postResponse?.data?.data?.savedPosts)) {
+                    savedPosts = postResponse.data.data.savedPosts;
+                  }
+                  console.log("Saved posts in profile:", savedPosts);
+                } catch (err) {
+                  console.error("Error parsing savedPosts:", err);
+                }
+                
+                if (!savedPosts || savedPosts.length === 0) {
+                  return <div className="empty">No saved properties yet</div>;
+                }
+                return <List posts={savedPosts} />;
               }}
             </Await>
           </Suspense>

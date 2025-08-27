@@ -56,9 +56,9 @@ function ListPage() {
                 </div>
               }
             >
-              {(postResponse) => (
+              {(posts) => (
                 <PostList 
-                  posts={postResponse.data} 
+                  posts={posts} 
                   onCountChange={handleCountChange}
                 />
               )}
@@ -82,7 +82,7 @@ function ListPage() {
                 </div>
               }
             >
-              {(postResponse) => <Map items={postResponse.data} />}
+              {(posts) => <Map items={posts} />}
             </Await>
           </Suspense>
         </div>

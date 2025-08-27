@@ -16,7 +16,7 @@ npm install
 
 ### Development
 ```bash
-node app.js
+npm start
 ```
 
 The Socket.io server will be available at `http://localhost:4000`
