@@ -29,12 +29,15 @@ function Chat({ chats }) {
   }, [chats]);
 
   const messageEndRef = useRef();
+  const chatCenterRef = useRef(); // New ref for the scrollable div
 
   const decrease = useNotificationStore((state) => state.decrease);
 
   useEffect(() => {
-    if (chat?.messages?.length) {
-      messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chat?.messages?.length && chatCenterRef.current) {
+      setTimeout(() => {
+        chatCenterRef.current.scrollTop = chatCenterRef.current.scrollHeight;
+      }, 0);
     }
   }, [chat?.messages?.length]);
 
@@ -128,7 +131,7 @@ function Chat({ chats }) {
               X
             </span>
           </div>
-          <div className="center">
+          <div className="center" ref={chatCenterRef}>
             {chat.messages.map((message) => (
               <div
                 className="chatMessage"
