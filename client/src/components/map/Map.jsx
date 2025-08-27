@@ -63,7 +63,6 @@ function Map({ items }) {
     updateMapCenter();
   }, [city, items]);
 
-  // A check to prevent rendering the map before the center is ready
   if (!mapCenter) {
     return <div>Loading Map...</div>;
   }
@@ -81,7 +80,12 @@ function Map({ items }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {items.map((item) => (
-        <Pin item={item} key={item.id} />
+        // ✅ CRITICAL FIX: Convert string coordinates to numbers
+        <Pin item={{
+            ...item,
+            latitude: parseFloat(item.latitude),
+            longitude: parseFloat(item.longitude)
+        }} key={item.id} />
       ))}
     </MapContainer>
   );
