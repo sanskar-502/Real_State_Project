@@ -2,11 +2,27 @@
 
 .twocolumns {
   display: flex;
-  gap: 40px;
+  gap: 20px;
   min-height: 100vh;
+  max-width: 2000px;
+  margin: 0 auto;
+  padding: 0 20px;
+  
+  @include lg {
+    gap: 18px;
+    padding: 0 16px;
+    max-width: 1800px;
+  }
+  
   @include md {
     flex-direction: column;
-    gap: 0;
+    gap: 20px;
+    padding: 0 12px;
+  }
+  
+  @include sm {
+    gap: 16px;
+    padding: 0 8px;
   }
 }
 
@@ -14,18 +30,28 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
   min-width: 0;
-  // margin-right: 10px;
+  
+  @include md {
+    gap: 20px;
+  }
 }
 
 .chatColumn {
-  flex: 1;
+  flex: 1.3;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   min-width: 0;
+  min-width: 500px;
+  
+  @include lg {
+    min-width: 450px;
+  }
+  
   @include md {
+    min-width: 0;
     margin-top: 0;
   }
 }
@@ -35,90 +61,244 @@
   flex-direction: column;
   align-items: center;
   background: #fff;
-  border-radius: 24px;
-  box-shadow: 0 4px 32px rgba(30,41,59,0.10);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(30,41,59,0.08);
   padding: 32px 24px;
-  // margin-bottom: 10px;
   margin-top: 20px;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #2563eb 0%, #3bb19b 50%, #fece51 100%);
+  }
+  
+  @include sm {
+    padding: 24px 20px;
+  }
 
   .avatarWrapper {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    position: relative;
+    
     img {
-      width: 96px;
-      height: 96px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
       border: 4px solid #fece51;
-      box-shadow: 0 4px 16px rgba(254,206,81,0.16);
+      box-shadow: 0 8px 24px rgba(254,206,81,0.20);
       object-fit: cover;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 32px rgba(254,206,81,0.25);
+      }
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      width: 20px;
+      height: 20px;
+      background: #22c55e;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(34,197,94,0.3);
+    }
+    
+    @include sm {
+      img {
+        width: 80px;
+        height: 80px;
+      }
+      
+      &::after {
+        width: 16px;
+        height: 16px;
+        bottom: 4px;
+        right: 4px;
+      }
     }
   }
   .userInfo {
     text-align: center;
+    margin-bottom: 24px;
+    
     h2 {
-      margin: 0;
-      font-size: 1.5rem;
+      margin: 0 0 8px 0;
+      font-size: 1.75rem;
       font-weight: 700;
       color: #1a202c;
+      letter-spacing: -0.5px;
+      
+      @include sm {
+        font-size: 1.5rem;
+      }
     }
+    
     p {
-      margin: 4px 0 0 0;
-      color: #374151;
+      margin: 0;
+      color: #6b7280;
       font-size: 1rem;
+      font-weight: 500;
+      opacity: 0.9;
     }
   }
   .userActions {
     display: flex;
-    gap: 16px;
-    margin-top: 20px;
+    gap: 12px;
+    width: 100%;
+    margin-top: 8px;
+    
     .primary, .secondary {
-      padding: 10px 24px;
-      border-radius: 8px;
+      flex: 1;
+      padding: 12px 20px;
+      border-radius: 10px;
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 0.95rem;
       border: none;
       cursor: pointer;
-      transition: background 0.2s, box-shadow 0.2s;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
     }
+    
     .primary {
       background: #2563eb;
       color: #fff;
-      &:hover { background: #1d4ed8; }
+      box-shadow: 0 4px 12px rgba(37,99,235,0.15);
+      
+      &:hover {
+        background: #1d4ed8;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(37,99,235,0.20);
+      }
+      
+      &:active {
+        transform: translateY(0);
+      }
     }
+    
     .secondary {
-      background: #f3f4f6;
-      color: #1a202c;
-      &:hover { background: #e5e7eb; }
+      background: #f8fafc;
+      color: #374151;
+      border: 1px solid #e5e7eb;
+      
+      &:hover {
+        background: #f1f5f9;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      }
+      
+      &:active {
+        transform: translateY(0);
+      }
+    }
+    
+    @include sm {
+      flex-direction: column;
+      gap: 10px;
     }
   }
 }
 
 .listCard, .chatCard {
   background: #fff;
-  border-radius: 24px;
-  box-shadow: 0 4px 32px rgba(30,41,59,0.10);
-  padding: 32px 24px;
-  margin-bottom: 32px;
-  margin-top: 22px;
-  margin-right: 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(30,41,59,0.06);
+  border: 1px solid rgba(229,231,235,0.5);
+  padding: 24px;
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 8px 32px rgba(30,41,59,0.10);
+    transform: translateY(-2px);
+  }
+  
+  @include sm {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
 }
 
 .sectionHeader {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f1f5f9;
+  
   h1 {
-    font-size: 1.3rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: #1a202c;
     margin: 0;
+    letter-spacing: -0.3px;
+    flex: 1;
+    
+    @include sm {
+      font-size: 1.1rem;
+    }
   }
+  
   .sectionIcon {
     font-size: 1.5rem;
     color: #2563eb;
+    padding: 12px;
+    background: rgba(37,99,235,0.08);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    
+    @include md {
+      font-size: 1.4rem;
+      padding: 10px;
+      min-width: 40px;
+      min-height: 40px;
+    }
+    
+    @include sm {
+      font-size: 1.3rem;
+      padding: 8px;
+      min-width: 36px;
+      min-height: 36px;
+    }
+    
+    @include xs {
+      font-size: 1.2rem;
+      padding: 6px;
+      min-width: 32px;
+      min-height: 32px;
+    }
   }
+  
   button.primary {
     margin-left: auto;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    white-space: nowrap;
+    
+    @include sm {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
   }
 }
 
@@ -129,14 +309,146 @@ button.primary {
   border-radius: 8px;
   font-weight: 600;
   font-size: 0.95rem;
-  padding: 8px 20px;
+  padding: 10px 20px;
   box-shadow: 0 2px 8px rgba(37,99,235,0.08);
   cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
+  transition: all 0.2s ease;
   margin-left: auto;
+  min-height: 40px;
+  
   &:hover {
     background: #1d4ed8;
     box-shadow: 0 4px 16px rgba(37,99,235,0.16);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  @include sm {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+// Enhanced states and interactions
+.loadingContainer, .errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  
+  .spinner {
+    font-size: 2rem;
+    color: #2563eb;
+    margin-bottom: 16px;
+    animation: spin 1s linear infinite;
+  }
+  
+  p {
+    color: #6b7280;
+    font-size: 1rem;
+    margin: 0;
+    font-weight: 500;
+  }
+  
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+}
+
+.errorContainer {
+  p {
+    color: #dc2626;
+    font-weight: 600;
+  }
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  text-align: center;
+  
+  .emptyIcon {
+    font-size: 3.5rem;
+    color: #d1d5db;
+    margin-bottom: 24px;
+    opacity: 0.7;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #374151;
+    margin: 0 0 12px 0;
+    letter-spacing: -0.3px;
+  }
+  
+  p {
+    color: #6b7280;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0 0 24px 0;
+    max-width: 300px;
+  }
+  
+  .emptyAction {
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    border-radius: 10px;
+    min-height: 44px;
+    
+    @include sm {
+      padding: 10px 20px;
+      font-size: 0.9rem;
+    }
+  }
+  
+  &.chatEmpty {
+    padding: 48px 24px;
+    
+    .emptyIcon {
+      font-size: 2.5rem;
+    }
+    
+    h3 {
+      font-size: 1.25rem;
+    }
+    
+    p {
+      font-size: 0.9rem;
+      margin-bottom: 0;
+    }
+  }
+}
+
+.listWrapper {
+  .listStats {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-radius: 10px;
+    border-left: 4px solid #2563eb;
+    
+    .statItem {
+      font-size: 0.9rem;
+      color: #4b5563;
+      
+      strong {
+        color: #1f2937;
+        font-weight: 700;
+      }
+    }
   }
 }
 
@@ -184,9 +496,15 @@ button.primary {
         padding-left: 24px;
       }
       @include sm {
-        padding-right: 4px;
+        padding: 20px 16px;
+        margin-left: 16px;
+        margin-right: 16px;
+      }
+      
+      @include xs {
+        padding: 16px 12px;
         margin-left: 12px;
-        padding-left: 12px;
+        margin-right: 12px;
       }
 
       .title{
@@ -199,6 +517,14 @@ button.primary {
           font-weight: 600;
           font-size: 2rem;
           color: #1a202c;
+          
+          @include sm {
+            font-size: 1.6rem;
+          }
+          
+          @include xs {
+            font-size: 1.4rem;
+          }
         }
 
         button{
@@ -211,9 +537,34 @@ button.primary {
           font-size: 1rem;
           box-shadow: 0 2px 8px rgba(254,206,81,0.08);
           transition: background 0.2s, box-shadow 0.2s;
+          min-height: 44px;
+          
           &:hover {
             background: #ffd877;
             box-shadow: 0 4px 16px rgba(254,206,81,0.16);
+          }
+          
+          @media (hover: none) {
+            &:hover {
+              background: #fece51;
+              box-shadow: 0 2px 8px rgba(254,206,81,0.08);
+            }
+            
+            &:active {
+              background: #ffd877;
+              box-shadow: 0 4px 16px rgba(254,206,81,0.16);
+              transform: scale(0.98);
+            }
+          }
+          
+          @include sm {
+            padding: 10px 20px;
+            font-size: 0.95rem;
+          }
+          
+          @include xs {
+            padding: 8px 16px;
+            font-size: 0.9rem;
           }
         }
       }

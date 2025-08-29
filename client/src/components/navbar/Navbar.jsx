@@ -47,17 +47,30 @@ function Navbar() {
         <div className="menuIcon">
           <img
             src="/menu.png"
-            alt=""
+            alt="Menu"
             onClick={() => setOpen((prev) => !prev)}
           />
         </div>
+        <div className={open ? "menuOverlay active" : "menuOverlay"} onClick={() => setOpen(false)}></div>
         <div className={open ? "menu active" : "menu"}>
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
-          <Link to="/contact">Contact</Link>
-          <Link to="/agents">Agents</Link>
-          <Link to="/login">Sign in</Link>
-          <Link to="/register">Sign up</Link>
+          <button className="closeButton" onClick={() => setOpen(false)}>
+            ×
+          </button>
+          <div className="menuItems">
+            <Link to="/" onClick={() => setOpen(false)}>Home</Link>
+            <Link to="/about" onClick={() => setOpen(false)}>About</Link>
+            <Link to="/contact" onClick={() => setOpen(false)}>Contact</Link>
+            <Link to="/agents" onClick={() => setOpen(false)}>Agents</Link>
+            {!currentUser && (
+              <>
+                <Link to="/login" onClick={() => setOpen(false)}>Sign in</Link>
+                <Link to="/register" onClick={() => setOpen(false)}>Sign up</Link>
+              </>
+            )}
+            {currentUser && (
+              <Link to="/profile" onClick={() => setOpen(false)}>Profile</Link>
+            )}
+          </div>
         </div>
       </div>
     </nav>

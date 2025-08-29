@@ -5,7 +5,7 @@ import apiRequest from "../../lib/apiRequest";
 import { Await, Link, useLoaderData, useNavigate } from "react-router-dom";
 import { Suspense, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import { FaList, FaBookmark, FaComments } from "react-icons/fa";
+import { FaList, FaBookmark, FaComments, FaPlus, FaSpinner } from "react-icons/fa";
 
 function ProfilePage() {
   const data = useLoaderData();
@@ -18,7 +18,7 @@ function ProfilePage() {
       updateUser(null);
       navigate("/");
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -44,21 +44,57 @@ function ProfilePage() {
         <section className="listCard">
           <div className="sectionHeader">
             <FaList className="sectionIcon" />
-            <h1>My List</h1>
+            <h1>My Properties</h1>
             <Link to="/add">
-              <button className="primary">Create New Post</button>
+              <button className="primary">
+                <FaPlus style={{ marginRight: '6px', fontSize: '0.8rem' }} />
+                Add Property
+              </button>
             </Link>
           </div>
-          <Suspense fallback={<p>Loading...</p>}>
+          <Suspense fallback={
+            <div className="loadingContainer">
+              <FaSpinner className="spinner" />
+              <p>Loading your properties...</p>
+            </div>
+          }>
             <Await
               resolve={data.postResponse}
-              errorElement={<p>Error loading posts!</p>}
+              errorElement={
+                <div className="errorContainer">
+                  <p>❌ Error loading properties. Please refresh the page.</p>
+                </div>
+              }
             >
               {(postResponse) => {
-                console.log("User posts response:", postResponse);
                 const userPosts = postResponse?.data?.data?.userPosts || [];
-                console.log("User posts:", userPosts);
-                return <List posts={userPosts} />;
+                
+                if (userPosts.length === 0) {
+                  return (
+                    <div className="emptyState">
+                      <FaList className="emptyIcon" />
+                      <h3>No Properties Yet</h3>
+                      <p>Start building your portfolio by adding your first property listing.</p>
+                      <Link to="/add">
+                        <button className="primary emptyAction">
+                          <FaPlus style={{ marginRight: '8px' }} />
+                          Create Your First Property
+                        </button>
+                      </Link>
+                    </div>
+                  );
+                }
+                
+                return (
+                  <div className="listWrapper">
+                    <div className="listStats">
+                      <span className="statItem">
+                        <strong>{userPosts.length}</strong> Properties Listed
+                      </span>
+                    </div>
+                    <List posts={userPosts} />
+                  </div>
+                );
               }}
             </Await>
           </Suspense>
@@ -67,17 +103,23 @@ function ProfilePage() {
         <section className="listCard">
           <div className="sectionHeader">
             <FaBookmark className="sectionIcon" />
-            <h1>Saved List</h1>
+            <h1>Saved Properties</h1>
           </div>
-          <Suspense fallback={<p>Loading...</p>}>
+          <Suspense fallback={
+            <div className="loadingContainer">
+              <FaSpinner className="spinner" />
+              <p>Loading saved properties...</p>
+            </div>
+          }>
             <Await
               resolve={data.postResponse}
-              errorElement={<p>Error loading posts!</p>}
+              errorElement={
+                <div className="errorContainer">
+                  <p>❌ Error loading saved properties. Please refresh the page.</p>
+                </div>
+              }
             >
               {(postResponse) => {
-                console.log("Full postResponse:", postResponse);
-                console.log("Response data:", postResponse?.data?.data);
-                
                 let savedPosts = [];
                 try {
                   if (typeof postResponse?.data?.data?.savedPosts === 'string') {
@@ -85,15 +127,35 @@ function ProfilePage() {
                   } else if (Array.isArray(postResponse?.data?.data?.savedPosts)) {
                     savedPosts = postResponse.data.data.savedPosts;
                   }
-                  console.log("Saved posts in profile:", savedPosts);
                 } catch (err) {
                   console.error("Error parsing savedPosts:", err);
                 }
                 
                 if (!savedPosts || savedPosts.length === 0) {
-                  return <div className="empty">No saved properties yet</div>;
+                  return (
+                    <div className="emptyState">
+                      <FaBookmark className="emptyIcon" />
+                      <h3>No Saved Properties</h3>
+                      <p>Properties you bookmark will appear here for easy access later.</p>
+                      <Link to="/list">
+                        <button className="primary emptyAction">
+                          Browse Properties
+                        </button>
+                      </Link>
+                    </div>
+                  );
                 }
-                return <List posts={savedPosts} />;
+                
+                return (
+                  <div className="listWrapper">
+                    <div className="listStats">
+                      <span className="statItem">
+                        <strong>{savedPosts.length}</strong> Saved Properties
+                      </span>
+                    </div>
+                    <List posts={savedPosts} />
+                  </div>
+                );
               }}
             </Await>
           </Suspense>
@@ -103,14 +165,34 @@ function ProfilePage() {
         <div className="chatCard">
           <div className="sectionHeader">
             <FaComments className="sectionIcon" />
-            <h1>Chats</h1>
+            <h1>Messages</h1>
           </div>
-          <Suspense fallback={<p>Loading...</p>}>
+          <Suspense fallback={
+            <div className="loadingContainer">
+              <FaSpinner className="spinner" />
+              <p>Loading messages...</p>
+            </div>
+          }>
             <Await
               resolve={data.chatResponse}
-              errorElement={<p>Error loading chats!</p>}
+              errorElement={
+                <div className="errorContainer">
+                  <p>❌ Error loading messages. Please refresh the page.</p>
+                </div>
+              }
             >
-              {(chatResponse) => <Chat chats={chatResponse.data}/>} 
+              {(chatResponse) => {
+                if (!chatResponse.data || chatResponse.data.length === 0) {
+                  return (
+                    <div className="emptyState chatEmpty">
+                      <FaComments className="emptyIcon" />
+                      <h3>No Messages Yet</h3>
+                      <p>Start conversations with property owners and potential buyers.</p>
+                    </div>
+                  );
+                }
+                return <Chat chats={chatResponse.data}/>;
+              }}
             </Await>
           </Suspense>
         </div>

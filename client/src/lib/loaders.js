@@ -15,8 +15,6 @@ export const listPageLoader = async ({ request, params }) => {
 
 export const profilePageLoader = async () => {
   const postPromise = apiRequest("/users/profilePosts").then(response => {
-    console.log("Profile loader response raw:", response);
-    
     try {
       // Parse saved posts data
       if (typeof response.data.data.savedPosts === 'string') {
@@ -36,8 +34,6 @@ export const profilePageLoader = async () => {
           isSaved: true
         }));
       }
-      
-      console.log("Profile loader response parsed:", response.data.data);
     } catch (err) {
       console.error("Error parsing response data:", err);
     }

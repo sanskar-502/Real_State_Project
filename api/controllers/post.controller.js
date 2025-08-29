@@ -8,6 +8,17 @@ export const getPosts = async (req, res) => {
 
   try {
     const where = {};
+    
+    // Input validation: check for malicious or extremely large inputs
+    for (const [key, value] of Object.entries(query)) {
+      if (typeof value === 'string' && value.length > 1000) {
+        console.warn(`Suspicious input detected for ${key}: length ${value.length}`);
+        return res.status(400).json({ 
+          message: "Invalid request: parameter too large",
+          error: `Parameter '${key}' exceeds maximum length` 
+        });
+      }
+    }
 
     if (query.city) {
       const city = query.city.toLowerCase();
@@ -29,14 +40,65 @@ export const getPosts = async (req, res) => {
       where.property = query.property;
     }
 
+    // Safe integer parsing with validation
+    const safeParseInt = (value, max = 10000000000, min = 0) => {
+      if (!value || value === '' || value === null || value === undefined) return null;
+      
+      // Convert to string and check length to prevent parsing extremely large numbers
+      const strValue = String(value).trim();
+      
+      // If the number has more than 15 digits, it's too large
+      if (strValue.length > 15) {
+        console.warn(`Number too large, clamping to max: ${strValue}`);
+        return max;
+      }
+      
+      // Check for non-numeric characters (except for leading + or -)
+      if (!/^[+-]?\d+$/.test(strValue)) {
+        console.warn(`Invalid number format: ${strValue}`);
+        return null;
+      }
+      
+      const parsed = parseInt(strValue, 10);
+      
+      // Check if parsing resulted in Infinity, -Infinity, or NaN
+      if (!Number.isFinite(parsed) || isNaN(parsed)) {
+        console.warn(`Invalid parsed number: ${parsed} from ${strValue}`);
+        return null;
+      }
+      
+      // Clamp the value to the specified range
+      if (parsed < min) return min;
+      if (parsed > max) return max;
+      
+      return parsed;
+    };
+
     if (query.bedroom) {
-      where.bedroom = parseInt(query.bedroom);
+      const bedroom = safeParseInt(query.bedroom, 20, 1); // Max 20 bedrooms, min 1
+      if (bedroom !== null) where.bedroom = bedroom;
     }
 
     if (query.minPrice || query.maxPrice) {
       where.price = {};
-      if (query.minPrice) where.price.gte = parseInt(query.minPrice);
-      if (query.maxPrice) where.price.lte = parseInt(query.maxPrice);
+      
+      if (query.minPrice) {
+        const minPrice = safeParseInt(query.minPrice, 10000000000, 0); // Max 10 billion, min 0
+        if (minPrice !== null) where.price.gte = minPrice;
+      }
+      
+      if (query.maxPrice) {
+        const maxPrice = safeParseInt(query.maxPrice, 10000000000, 0); // Max 10 billion, min 0
+        if (maxPrice !== null) where.price.lte = maxPrice;
+      }
+      
+      // If both prices are set, ensure minPrice <= maxPrice
+      if (where.price.gte && where.price.lte && where.price.gte > where.price.lte) {
+        // Swap the values if min > max
+        const temp = where.price.gte;
+        where.price.gte = where.price.lte;
+        where.price.lte = temp;
+      }
     }
 
     const posts = await prisma.post.findMany({ where });

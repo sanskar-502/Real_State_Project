@@ -14,6 +14,25 @@ function NewPostPage() {
 
   const navigate = useNavigate();
 
+  // Safe integer parsing function
+  const safeParseInt = (value, max = 10000000000, min = 0) => {
+    if (!value || value === '') return 0;
+    const parsed = parseInt(value);
+    if (isNaN(parsed)) return 0;
+    if (parsed < min) return min;
+    if (parsed > max) return max;
+    return parsed;
+  };
+
+  const safeParseFloat = (value, max = 1000000, min = 0) => {
+    if (!value || value === '') return 0;
+    const parsed = parseFloat(value);
+    if (isNaN(parsed)) return 0;
+    if (parsed < min) return min;
+    if (parsed > max) return max;
+    return parsed;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -22,15 +41,27 @@ function NewPostPage() {
     const formData = new FormData(e.target);
     const inputs = Object.fromEntries(formData);
 
+    // Validate large numbers before sending
+    const price = safeParseInt(inputs.price);
+    const size = safeParseInt(inputs.size, 100000000, 1); // Max 100M sqft, min 1
+    const bedroom = safeParseInt(inputs.bedroom, 20, 1); // Max 20 bedrooms
+    const bathroom = safeParseInt(inputs.bathroom, 20, 1); // Max 20 bathrooms
+
+    if (price === 0) {
+      setError("Please enter a valid price.");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       const res = await apiRequest.post("/posts", {
         postData: {
           title: inputs.title,
-          price: parseInt(inputs.price),
+          price: price,
           address: inputs.address,
           city: inputs.city,
-          bedroom: parseInt(inputs.bedroom),
-          bathroom: parseInt(inputs.bathroom),
+          bedroom: bedroom,
+          bathroom: bathroom,
           type: inputs.type,
           property: inputs.property,
           latitude: inputs.latitude,
@@ -42,15 +73,15 @@ function NewPostPage() {
           utilities: inputs.utilities,
           pet: inputs.pet,
           income: inputs.income,
-          size: parseInt(inputs.size),
-          school: parseFloat(inputs.school),
-          bus: parseFloat(inputs.bus),
-          restaurant: parseFloat(inputs.restaurant),
+          size: size,
+          school: safeParseFloat(inputs.school),
+          bus: safeParseFloat(inputs.bus),
+          restaurant: safeParseFloat(inputs.restaurant),
         },
       });
       navigate("/" + res.data.id);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setError(err.response?.data?.message || "Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -83,6 +114,9 @@ function NewPostPage() {
                 type="number" 
                 placeholder="Enter price in rupees"
                 min="0"
+                max="10000000000"
+                step="1000"
+                title="Maximum price: ₹10,000,000,000 (10 billion)"
                 required 
               />
             </div>
@@ -155,10 +189,12 @@ function NewPostPage() {
               <label htmlFor="bedroom">Bedrooms</label>
               <input 
                 min={1} 
+                max={20}
                 id="bedroom" 
                 name="bedroom" 
                 type="number" 
                 placeholder="Number of bedrooms"
+                title="Maximum: 20 bedrooms"
                 required 
               />
             </div>
@@ -167,10 +203,12 @@ function NewPostPage() {
               <label htmlFor="bathroom">Bathrooms</label>
               <input 
                 min={1} 
+                max={20}
                 id="bathroom" 
                 name="bathroom" 
                 type="number" 
                 placeholder="Number of bathrooms"
+                title="Maximum: 20 bathrooms"
                 required 
               />
             </div>
@@ -178,11 +216,13 @@ function NewPostPage() {
             <div className="item">
               <label htmlFor="size">Total Size (sqft)</label>
               <input 
-                min={0} 
+                min={1} 
+                max={100000000}
                 id="size" 
                 name="size" 
                 type="number" 
                 placeholder="Property size in square feet"
+                title="Maximum: 100,000,000 sqft"
                 required 
               />
             </div>

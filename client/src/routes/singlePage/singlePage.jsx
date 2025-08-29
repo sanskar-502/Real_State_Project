@@ -22,7 +22,7 @@ function SinglePage() {
       const res = await apiRequest.post("/chats", { receiverId: post.user.id });
       navigate("/profile");
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 

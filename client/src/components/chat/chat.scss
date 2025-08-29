@@ -14,19 +14,46 @@
 
   @include sm {
     flex-direction: column;
+    height: calc(100vh - 75px);
+    padding: 16px;
+    gap: 12px;
+  }
+  
+  @include xs {
+    padding: 12px;
+    gap: 8px;
+    height: calc(100vh - 75px);
   }
 
-  &:has(.chatBox:not(:empty)) {
-    .messages {
-      flex: 0 0 210px;
-      overflow-y: auto;
+    &:has(.chatBox:not(:empty)) {
+      .messages {
+        flex: 0 0 210px;
+        overflow-y: auto;
+      }
+      .chatBox {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      @include sm {
+        .messages {
+          flex: 0 0 30%;
+          min-height: 200px;
+        }
+        .chatBox {
+          flex: 1;
+          min-height: 0;
+        }
+      }
+      
+      @include xs {
+        .messages {
+          flex: 0 0 25%;
+          min-height: 180px;
+        }
+      }
     }
-    .chatBox {
-      flex: 1 1 auto;
-      display: flex;
-      flex-direction: column;
-    }
-  }
 
   .messages {
     flex: 0 0 210px;
@@ -69,10 +96,34 @@
       position: relative;
       min-height: fit-content;
       margin-bottom: 4px;
+      min-height: 44px;
       
       &:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+      
+      @media (hover: none) {
+        &:hover {
+          transform: none;
+          box-shadow: none;
+        }
+        
+        &:active {
+          background-color: #f0f0f0;
+          transform: scale(0.98);
+        }
+      }
+      
+      @include sm {
+        padding: 8px;
+        gap: 8px;
+        min-height: 44px;
+      }
+      
+      @include xs {
+        padding: 6px;
+        gap: 6px;
       }
 
       &.active {
@@ -86,6 +137,16 @@
         border-radius: 50%;
         object-fit: cover;
         border: 1px solid #f7c14b;
+        
+        @include sm {
+          width: 32px;
+          height: 32px;
+        }
+        
+        @include xs {
+          width: 28px;
+          height: 28px;
+        }
       }
 
       .message-content {
@@ -97,6 +158,10 @@
           color: #333;
           display: block;
           margin-bottom: 4px;
+          
+          @include xs {
+            font-size: 0.9rem;
+          }
         }
 
         p {
@@ -106,6 +171,10 @@
           overflow: hidden;
           text-overflow: ellipsis;
           margin: 0;
+          
+          @include xs {
+            font-size: 0.8em;
+          }
         }
       }
 
@@ -146,6 +215,17 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      min-height: 60px;
+      
+      @include sm {
+        padding: 12px 16px;
+        min-height: 50px;
+      }
+      
+      @include xs {
+        padding: 10px 12px;
+        min-height: 48px;
+      }
 
       .user {
         display: flex;
@@ -157,10 +237,35 @@
           height: 30px;
           border-radius: 50%;
           object-fit: cover;
+          
+          @include xs {
+            width: 28px;
+            height: 28px;
+          }
         }
       }
       .close {
         cursor: pointer;
+        min-height: 44px;
+        min-width: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: background-color 0.2s ease;
+        
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        &:active {
+          transform: scale(0.95);
+        }
+        
+        @include xs {
+          min-height: 40px;
+          min-width: 40px;
+        }
       }
     }
     .center {
@@ -179,6 +284,16 @@
         padding: 12px 16px;
         border-radius: 12px;
         background-color: #f3f4f6;
+        
+        @include sm {
+          max-width: 75%;
+          padding: 10px 14px;
+        }
+        
+        @include xs {
+          max-width: 85%;
+          padding: 8px 12px;
+        }
 
         &[style*="flex-end"] {
           align-self: flex-end;
@@ -240,6 +355,16 @@
           border-color: #f7c14b;
           background-color: white;
         }
+        
+        @include sm {
+          font-size: 16px; // Prevent zoom on iOS
+          padding: 10px 12px;
+        }
+        
+        @include xs {
+          min-height: 44px;
+          padding: 8px 10px;
+        }
       }
 
       button {
@@ -252,6 +377,7 @@
         font-weight: 500;
         transition: all 0.2s;
         min-width: 100px;
+        min-height: 44px;
 
         &:hover {
           background-color: darken(#f7c14b, 5%);
@@ -259,6 +385,28 @@
 
         &:active {
           transform: scale(0.98);
+        }
+        
+        @media (hover: none) {
+          &:hover {
+            background-color: #f7c14b;
+          }
+          
+          &:active {
+            background-color: darken(#f7c14b, 10%);
+          }
+        }
+        
+        @include sm {
+          padding: 10px 20px;
+          min-width: 80px;
+          font-size: 0.9rem;
+        }
+        
+        @include xs {
+          padding: 8px 16px;
+          min-width: 70px;
+          font-size: 0.85rem;
         }
       }
     }

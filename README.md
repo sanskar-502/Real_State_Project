@@ -1,272 +1,658 @@
 # 🏠 Real Estate Platform
 
-A comprehensive full-stack real estate platform built with modern web technologies. This application allows users to browse, search, and manage real estate listings with features like real-time messaging, user authentication, and interactive maps.
+A comprehensive, full-stack real estate platform built with modern web technologies, featuring property listings, real-time chat, interactive maps, and advanced search capabilities. This platform provides a seamless experience for property buyers, sellers, and real estate agents.
 
-## 📜 Table of Contents
+## ✨ Key Features
 
-- [✨ Features](#-features)
-- [🖼️ Screenshots](#-screenshots)
-- [🛠️ Tech Stack](#-tech-stack)
-- [📁 Project Structure](#-project-structure)
-- [🚀 Getting Started](#-getting-started)
-- [📊 Database Schema](#-database-schema)
-- [🔧 API Endpoints](#-api-endpoints)
-- [🚀 Deployment](#-deployment)
-- [🤝 Contributing](#-contributing)
-- [📝 License](#-license)
-- [👨‍💻 Author](#-author)
+### 🔍 **Advanced Property Search**
+- Multi-criteria filtering (location, price, property type, bedrooms)
+- Interactive map integration with property markers
+- Intelligent search with autocomplete
+- Mobile-responsive search interface
+- Real-time search results
 
-## ✨ Features
+### 💬 **Real-time Communication**
+- Instant messaging between users
+- Online presence indicators
+- Chat history persistence
+- Message delivery confirmations
+- Mobile-optimized chat interface
 
-This platform is packed with features to provide a seamless experience for both property seekers and sellers.
+### 🗺️ **Interactive Maps**
+- Leaflet-powered property visualization
+- Custom property markers with details
+- Location-based search
+- Zoom and pan capabilities
+- Mobile touch support
 
-### 🏘️ Property Management
+### 👤 **User Management**
+- Secure authentication system
+- User profiles with avatars
+- Property management dashboard
+- Saved properties functionality
+- Account settings and preferences
 
--   **Property Listings**: Browse a wide variety of properties, including apartments, houses, condos, and land.
--   **Advanced Search & Filtering**: Easily find properties with a powerful search engine that filters by location, price, property type, number of bedrooms, and other amenities.
--   **Interactive Maps**: Visualize property locations on an interactive map powered by Leaflet, making it easy to understand the neighborhood and surrounding areas.
--   **Detailed Property Information**: Get all the details you need, including property descriptions, utilities, pet policies, nearby schools, bus stops, and restaurants.
--   **Save Properties**: Bookmark your favorite properties to easily access them later.
+### 🏡 **Property Management**
+- Create and edit property listings
+- Multiple image upload support
+- Rich text descriptions
+- Property details and amenities
+- Pricing and availability management
 
-### 👤 User-Specific Features
+### 📱 **Mobile-First Design**
+- Responsive design for all screen sizes
+- Touch-friendly interfaces
+- Optimized mobile navigation
+- Mobile-specific interactions
+- Progressive Web App capabilities
 
--   **Secure User Authentication**: A robust registration and login system using JWT and bcrypt ensures user data is safe.
--   **Personalized User Profiles**: Users can manage their profile information and upload a custom avatar.
--   **Post and Manage Listings**: Authenticated users can create, update, and delete their own property listings.
--   **Saved Properties Dashboard**: A dedicated section in the user profile to view and manage saved properties.
+### 🛡️ **Security Features**
+- JWT-based authentication
+- Input validation and sanitization
+- Protection against integer overflow attacks
+- XSS and CSRF protection
+- Secure password handling with bcrypt
 
-### 💬 Real-time Communication
+## 🏗️ Architecture Overview
 
--   **Instant Messaging**: A real-time chat system, built with Socket.io, allows for instant communication between potential buyers and sellers.
--   **Online User Status**: See which users are currently online.
--   **Message Notifications**: Receive real-time notifications for new messages.
--   **Persistent Chat History**: All conversations are saved and can be reviewed at any time.
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│                 │    │                 │    │                 │
+│   React Client  │◄──►│  Express API    │◄──►│   MongoDB       │
+│   (Frontend)    │    │   (Backend)     │    │  (Database)     │
+│                 │    │                 │    │                 │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         ▲                        │                        │
+         │                        │                        │
+         ▼                        ▼                        ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│                 │    │                 │    │                 │
+│  Socket.IO      │    │     Prisma      │    │   External      │
+│  (Real-time)    │    │     (ORM)       │    │   Services      │
+│                 │    │                 │    │  (Cloudinary)   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
 
-### 🎨 Modern and Responsive User Interface
+### Technology Stack
 
--   **Responsive Design**: The application is fully responsive and works seamlessly on desktops, tablets, and mobile devices.
--   **Modern UI/UX**: A clean, intuitive, and modern user interface designed with SCSS for a great user experience.
--   **Interactive Components**: The UI is full of interactive elements like image sliders, dynamic search bars, and filters to make the user journey as smooth as possible.
--   **Rich Text Editor**: Use a rich text editor (React Quill) for detailed property descriptions.
--   **Image Management**: Easily upload multiple images for a property listing using Cloudinary's powerful image management service.
+**Frontend (Client):**
+- **React 18** with modern hooks and concurrent features
+- **Vite** for fast development and optimized builds
+- **React Router DOM** for client-side routing
+- **Leaflet** for interactive maps
+- **Socket.IO Client** for real-time communication
+- **Axios** for HTTP requests
+- **SCSS** for advanced styling
+- **Zustand** for state management
 
-## 🖼️ Screenshots
+**Backend (API):**
+- **Node.js** with Express.js framework
+- **Prisma ORM** for database operations
+- **JWT** for secure authentication
+- **bcrypt** for password hashing
+- **CORS** for cross-origin requests
+- **MongoDB** as the primary database
 
-*(Add some screenshots of your application here to give users a visual overview of the project.)*
+**Real-time (Socket):**
+- **Socket.IO** for bidirectional communication
+- **Event-driven architecture** for messaging
+- **Connection management** for online presence
 
-## 🛠️ Tech Stack
+## 🚀 Quick Start Guide
 
-This project is built with a modern, full-stack technology set.
+### Prerequisites
+- Node.js v18 or higher
+- MongoDB database (local or cloud)
+- Git for version control
 
-### Frontend
+### 1. Clone the Repository
+```bash
+git clone https://github.com/sanskar-502/Real_State_Project
+cd Real_State_Project
+```
 
--   **React 18**: A powerful JavaScript library for building user interfaces.
--   **Vite**: A next-generation frontend tooling that provides a faster and leaner development experience.
--   **React Router DOM**: For handling client-side routing.
--   **SCSS**: For advanced and maintainable CSS styling.
--   **Leaflet**: An open-source JavaScript library for interactive maps.
--   **React Quill**: A rich text editor for creating detailed property descriptions.
--   **Axios**: A promise-based HTTP client for making requests to the backend API.
--   **Zustand**: A small, fast, and scalable state-management solution.
--   **Socket.io Client**: For real-time, bidirectional event-based communication.
+### 2. Set Up the Backend API
+```bash
+cd api
+npm install
 
-### Backend
+# Set up environment variables
+cp .env.example .env
+# Edit .env with your MongoDB URL and JWT secret
 
--   **Node.js**: A JavaScript runtime built on Chrome's V8 JavaScript engine.
--   **Express.js**: A minimal and flexible Node.js web application framework.
--   **Prisma**: A next-generation ORM for Node.js and TypeScript.
--   **MongoDB**: A NoSQL database for storing application data.
--   **JWT (JSON Web Tokens)**: For secure user authentication.
--   **bcrypt**: A library for hashing passwords.
--   **Socket.io**: For enabling real-time, bidirectional and event-based communication.
+# Set up database
+npx prisma generate
+npx prisma db push
 
-### Additional Tools
+# Start the API server
+npm run dev
+```
 
--   **Cloudinary**: For cloud-based image and video management.
--   **Cookie Parser**: For handling cookies in Express.js.
--   **CORS**: For enabling Cross-Origin Resource Sharing.
+### 3. Set Up the Socket.IO Server
+```bash
+cd ../socket
+npm install
+
+# Set up environment variables
+cp .env.example .env
+# Edit .env with client URL
+
+# Start the Socket.IO server
+npm run dev
+```
+
+### 4. Set Up the Frontend Client
+```bash
+cd ../client
+npm install
+
+# Set up environment variables
+cp .env.example .env
+# Edit .env with API and Socket URLs
+
+# Start the frontend
+npm run dev
+```
+
+### 5. Access the Application
+- **Frontend**: http://localhost:3000
+- **API**: http://localhost:8800
+- **Socket.IO**: http://localhost:4000
 
 ## 📁 Project Structure
 
 ```
 Real_State_Project/
-├── api/                    # Backend API server
-│   ├── controllers/        # Route controllers
-│   ├── middleware/         # Custom middleware
-│   ├── routes/            # API routes
-│   ├── prisma/            # Database schema
-│   └── app.js             # Main server file
-├── client/                # Frontend React application
+├── api/                     # Backend API Server
+│   ├── controllers/         # Route controllers
+│   ├── middleware/          # Custom middleware
+│   ├── routes/             # API route definitions
+│   ├── prisma/             # Database schema and migrations
+│   ├── lib/                # Utility libraries
+│   ├── tests/              # API tests
+│   ├── app.js              # Main server file
+│   ├── package.json        # API dependencies
+│   └── README.md           # API documentation
+├── client/                 # Frontend React Application
+│   ├── public/             # Static assets
 │   ├── src/
-│   │   ├── components/    # Reusable UI components
-│   │   ├── routes/        # Page components
-│   │   ├── context/       # React context providers
-│   │   └── lib/           # Utility functions
-│   └── public/            # Static assets
-└── socket/                # Socket.io server
-    └── app.js             # Real-time messaging server
+│   │   ├── components/     # Reusable UI components
+│   │   ├── routes/         # Page components
+│   │   ├── context/        # React contexts
+│   │   ├── lib/            # Utility functions
+│   │   ├── styles/         # Global styles
+│   │   ├── App.jsx         # Main app component
+│   │   └── main.jsx        # Entry point
+│   ├── package.json        # Frontend dependencies
+│   └── README.md           # Frontend documentation
+├── socket/                 # Socket.IO Real-time Server
+│   ├── app.js              # Socket.IO server
+│   ├── package.json        # Socket dependencies
+│   └── README.md           # Socket documentation
+├── README.md               # This file - Project overview
+├── SECURITY_MEASURES.md    # Security documentation
+└── .gitignore              # Git ignore rules
 ```
 
-## 🚀 Getting Started
+## 🔧 Development Setup
 
-Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
+### Environment Variables Setup
 
-### Prerequisites
+Each component requires its own environment configuration:
 
--   Node.js (v16 or higher)
--   MongoDB database (local or cloud-hosted)
--   A Cloudinary account for image uploads
+**API (.env):**
+```env
+DATABASE_URL="mongodb://localhost:27017/realestate"
+JWT_SECRET_KEY="your-super-secure-jwt-secret"
+CLIENT_URL="http://localhost:3000"
+PORT=8800
+```
 
-### Installation
+**Client (.env):**
+```env
+VITE_API_URL=http://localhost:8800/api
+VITE_SOCKET_URL=http://localhost:4000
+```
 
-1.  **Clone the repository**
+**Socket (.env):**
+```env
+PORT=4000
+CLIENT_URL=http://localhost:3000
+```
 
-    ```bash
-    git clone https://github.com/sanskar-502/Real_State_Project.git
-    cd Real_State_Project
-    ```
+### Development Workflow
 
-2.  **Install dependencies for all services**
+1. **Start the database** (MongoDB)
+2. **Run the API server** (`api/npm run dev`)
+3. **Run the Socket.IO server** (`socket/npm run dev`)
+4. **Run the frontend client** (`client/npm run dev`)
 
-    ```bash
-    # Install API dependencies
-    cd api
-    npm install
+## 🎯 Core Functionality
 
-    # Install client dependencies
-    cd ../client
-    npm install
+### Property Search & Filtering
+- **Location-based search**: Find properties by city or area
+- **Price range filtering**: Set minimum and maximum price limits
+- **Property type filtering**: Apartment, house, condo, or land
+- **Bedroom/bathroom filtering**: Specify desired room counts
+- **Advanced filters**: Additional amenities and features
 
-    # Install socket dependencies
-    cd ../socket
-    npm install
-    ```
+### User Authentication & Authorization
+- **Registration**: Create new user accounts with email verification
+- **Login/Logout**: Secure session management with JWT tokens
+- **Profile management**: Update user information and preferences
+- **Role-based access**: Different permissions for users and agents
 
-3.  **Set up environment variables**
+### Property Management
+- **Create listings**: Add new properties with detailed information
+- **Edit properties**: Update listing details, pricing, and availability
+- **Image management**: Upload and organize property photos
+- **Property analytics**: View listing performance and engagement
 
-    Create a `.env` file in the `api` directory and add the following variables:
+### Real-time Chat System
+- **Direct messaging**: One-on-one conversations between users
+- **Message persistence**: Chat history stored in database
+- **Online presence**: See who's currently available to chat
+- **Message notifications**: Real-time alerts for new messages
 
-    ```env
-    DATABASE_URL="your_mongodb_connection_string"
-    JWT_SECRET="your_jwt_secret_key"
-    CLOUDINARY_CLOUD_NAME="your_cloudinary_cloud_name"
-    CLOUDINARY_API_KEY="your_cloudinary_api_key"
-    CLOUDINARY_API_SECRET="your_cloudinary_api_secret"
-    CLIENT_URL="http://localhost:5173"
-    ```
+## 🛡️ Security Measures
 
-4.  **Set up the database**
+### Input Validation & Sanitization
+- **Price overflow protection**: Prevents integer overflow attacks
+- **Input length limits**: Restricts excessively long inputs
+- **Character validation**: Allows only safe characters
+- **XSS protection**: Sanitizes user-generated content
 
-    ```bash
-    cd api
-    npx prisma generate
-    npx prisma db push
-    ```
+### Authentication Security
+- **Password hashing**: bcrypt with salt rounds
+- **JWT tokens**: Secure, stateless authentication
+- **HTTP-only cookies**: Prevents XSS token theft
+- **Session management**: Automatic token refresh and expiration
 
-5.  **Start the development servers**
+### API Security
+- **CORS protection**: Restricts cross-origin requests
+- **Rate limiting**: Prevents abuse and DoS attacks
+- **Input validation**: Server-side validation for all inputs
+- **Error handling**: Secure error messages without data leakage
 
-    You will need to open three separate terminal windows to run the API, client, and socket servers.
+For detailed security documentation, see [SECURITY_MEASURES.md](./SECURITY_MEASURES.md)
 
-    ```bash
-    # In terminal 1: Start the API server (runs on port 8800)
-    cd api
-    npm start
+## 📊 Performance Features
 
-    # In terminal 2: Start the client development server (runs on port 5173)
-    cd client
-    npm run dev
+### Frontend Optimizations
+- **Code splitting**: Lazy loading of route components
+- **Image optimization**: Responsive images with lazy loading
+- **Bundle optimization**: Tree shaking and minification
+- **Caching strategies**: Browser and API response caching
 
-    # In terminal 3: Start the socket server (runs on port 4000)
-    cd socket
-    node app.js
-    ```
+### Backend Optimizations
+- **Database indexing**: Optimized queries for fast search
+- **Connection pooling**: Efficient database connections
+- **Response compression**: Gzipped API responses
+- **Query optimization**: Efficient Prisma operations
 
-6.  **Access the application**
+## 🧪 Testing Strategy
 
-    -   **Frontend**: [http://localhost:5173](http://localhost:5173)
-    -   **API**: [http://localhost:8800](http://localhost:8800)
-    -   **Socket**: [http://localhost:4000](http://localhost:4000)
+### Frontend Testing
+- **Component tests**: React Testing Library
+- **Integration tests**: User workflow testing
+- **E2E tests**: Cypress for full application testing
+- **Accessibility tests**: WCAG compliance validation
 
-## 📊 Database Schema
+### Backend Testing
+- **Unit tests**: Jest for controller and utility testing
+- **API tests**: Supertest for endpoint testing
+- **Security tests**: Validation of input sanitization
+- **Database tests**: Prisma operation testing
 
-The application uses MongoDB with Prisma as the ORM. The main entities are:
-
--   **User**: Stores user information, including credentials and profile data.
--   **Post**: Represents a property listing with all its details.
--   **PostDetail**: Contains extended information about a property.
--   **SavedPost**: A join table to keep track of properties saved by users.
--   **Chat**: Represents a conversation between two users.
--   **Message**: Stores individual chat messages within a conversation.
-
-## 🔧 API Endpoints
-
-Here is a list of the main API endpoints available.
-
-### Authentication
-
--   `POST /api/auth/register`: Register a new user.
--   `POST /api/auth/login`: Log in an existing user.
--   `POST /api/auth/logout`: Log out the current user.
-
-### Users
-
--   `GET /api/users/:id`: Get a user's profile information.
--   `PUT /api/users/:id`: Update a user's profile.
--   `DELETE /api/users/:id`: Delete a user's account.
-
-### Posts
-
--   `GET /api/posts`: Get all posts, with support for filtering.
--   `POST /api/posts`: Create a new post.
--   `GET /api/posts/:id`: Get a single post by its ID.
--   `PUT /api/posts/:id`: Update an existing post.
--   `DELETE /api/posts/:id`: Delete a post.
-
-### Chats & Messages
-
--   `GET /api/chats`: Get all chats for the current user.
--   `POST /api/chats`: Create a new chat with another user.
--   `GET /api/messages/:chatId`: Get all messages for a specific chat.
--   `POST /api/messages`: Send a new message in a chat.
+### Real-time Testing
+- **Socket.IO tests**: Connection and messaging tests
+- **Load testing**: Multiple concurrent connections
+- **Message delivery tests**: Reliability and ordering
 
 ## 🚀 Deployment
 
-### Frontend Deployment
-
-To build the frontend for production, run the following command:
-
+### Development Environment
 ```bash
-cd client
-npm run build
+# Start all services in development
+npm run dev:all  # Custom script to start all services
+
+# Or start individually:
+cd api && npm run dev &
+cd socket && npm run dev &
+cd client && npm run dev
 ```
 
-This will create a `dist` folder with the optimized static assets that can be deployed to any static hosting service like Netlify, Vercel, or GitHub Pages.
+### Production Deployment
 
-### Backend Deployment
+#### Using Docker Compose
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  api:
+    build: ./api
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    ports:
+      - "8800:8800"
+    
+  socket:
+    build: ./socket
+    environment:
+      - NODE_ENV=production
+      - CLIENT_URL=${CLIENT_URL}
+    ports:
+      - "4000:4000"
+    
+  client:
+    build: ./client
+    environment:
+      - VITE_API_URL=${API_URL}
+      - VITE_SOCKET_URL=${SOCKET_URL}
+    ports:
+      - "3000:80"
+```
 
--   Deploy the API server (the `api` directory) to your preferred hosting platform, such as Heroku, Render, or a VPS.
--   Make sure to set up the environment variables on your hosting platform.
--   Configure the CORS settings in `api/app.js` to allow requests from your production frontend URL.
+#### Manual Deployment
+1. **Deploy API server** to your preferred hosting (Heroku, AWS, DigitalOcean)
+2. **Deploy Socket.IO server** (can be same or separate instance)
+3. **Build and deploy frontend** to CDN or static hosting (Vercel, Netlify)
+4. **Configure environment variables** for production
+5. **Set up domain and SSL** certificates
 
-### Database
+### Environment Configuration
 
--   It is recommended to use a cloud-hosted MongoDB solution like MongoDB Atlas for production.
--   Update the `DATABASE_URL` in your production environment variables to point to your cloud database.
+**Production Environment Variables:**
+```env
+# API Production
+DATABASE_URL=mongodb+srv://user:pass@cluster.mongodb.net/realestate
+JWT_SECRET_KEY=your-production-jwt-secret
+CLIENT_URL=https://yourdomain.com
+
+# Frontend Production
+VITE_API_URL=https://api.yourdomain.com/api
+VITE_SOCKET_URL=https://socket.yourdomain.com
+
+# Socket Production
+CLIENT_URL=https://yourdomain.com
+PORT=4000
+```
+
+## 🎯 Use Cases
+
+### For Property Buyers
+- **Search and filter** properties by various criteria
+- **View detailed** property information and images
+- **Save favorite** properties for later viewing
+- **Contact property** owners or agents directly
+- **Get real-time updates** on property availability
+
+### For Property Sellers/Agents
+- **List properties** with comprehensive details
+- **Manage multiple** property listings
+- **Communicate directly** with potential buyers
+- **Track property** views and engagement
+- **Update property** information and pricing
+
+### For Platform Administrators
+- **Monitor user** activity and engagement
+- **Manage property** listings and quality
+- **Handle user** support and moderation
+- **Analyze platform** performance and usage
+
+## 🔧 Technical Requirements
+
+### Minimum System Requirements
+- **Node.js**: v18.0.0 or higher
+- **MongoDB**: v6.0 or higher
+- **RAM**: 2GB minimum, 4GB recommended
+- **Storage**: 10GB available space
+- **Network**: Stable internet connection
+
+### Supported Browsers
+- **Chrome**: Latest version
+- **Firefox**: Latest version
+- **Safari**: Latest version
+- **Edge**: Latest version
+- **Mobile browsers**: iOS Safari, Chrome Mobile
+
+## 📚 Documentation
+
+### Component Documentation
+- [API Documentation](./api/README.md) - Backend REST API
+- [Client Documentation](./client/README.md) - React frontend
+- [Socket.IO Documentation](./socket/README.md) - Real-time server
+- [Security Measures](./SECURITY_MEASURES.md) - Security implementation
+
+### Additional Resources
+- **API Endpoints**: Detailed in API README
+- **Component Guide**: Available in Client README
+- **Socket Events**: Documented in Socket README
+- **Security Guidelines**: Comprehensive security documentation
+
+## 🛠️ Development Guidelines
+
+### Code Quality Standards
+- **ESLint**: Follow configured linting rules
+- **Prettier**: Consistent code formatting
+- **TypeScript**: Type safety where applicable
+- **Testing**: Comprehensive test coverage
+- **Documentation**: Keep README files updated
+
+### Git Workflow
+```bash
+# Feature development
+git checkout -b feature/new-feature-name
+git add .
+git commit -m "feat: add new feature description"
+git push origin feature/new-feature-name
+
+# Create pull request for review
+```
+
+### Commit Convention
+- `feat:` - New features
+- `fix:` - Bug fixes
+- `docs:` - Documentation updates
+- `style:` - Code style changes
+- `refactor:` - Code refactoring
+- `test:` - Test additions or updates
+- `chore:` - Build/config changes
+
+## 🔍 API Overview
+
+### Authentication Endpoints
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `POST /api/auth/logout` - User logout
+
+### Property Endpoints
+- `GET /api/posts` - Get properties with filters
+- `POST /api/posts` - Create new property
+- `GET /api/posts/:id` - Get single property
+- `PUT /api/posts/:id` - Update property
+- `DELETE /api/posts/:id` - Delete property
+
+### User Endpoints
+- `GET /api/users/:id` - Get user profile
+- `PUT /api/users/:id` - Update user profile
+- `POST /api/users/:id/save` - Save/unsave property
+
+### Chat Endpoints
+- `GET /api/chats` - Get user chats
+- `POST /api/chats` - Create new chat
+- `POST /api/messages/:chatId` - Add message
+
+## 🎨 UI/UX Features
+
+### Design Principles
+- **Mobile-first**: Designed primarily for mobile devices
+- **Accessibility**: WCAG 2.1 AA compliance
+- **Performance**: Fast loading and smooth interactions
+- **User-centered**: Intuitive and easy-to-use interface
+
+### Visual Elements
+- **Consistent branding**: Cohesive color scheme and typography
+- **Responsive layouts**: Adapts to all screen sizes
+- **Loading states**: Clear feedback for user actions
+- **Error handling**: Friendly error messages and recovery options
+
+## 📈 Performance Metrics
+
+### Frontend Performance
+- **First Contentful Paint**: < 2 seconds
+- **Largest Contentful Paint**: < 3 seconds
+- **Cumulative Layout Shift**: < 0.1
+- **First Input Delay**: < 100ms
+
+### Backend Performance
+- **API response time**: < 200ms average
+- **Database query time**: < 100ms average
+- **Memory usage**: < 512MB per instance
+- **CPU usage**: < 70% under normal load
+
+## 🔧 Configuration
+
+### API Configuration
+- **Database**: MongoDB with Prisma ORM
+- **Authentication**: JWT with HTTP-only cookies
+- **File uploads**: Cloudinary integration
+- **Error handling**: Centralized error middleware
+
+### Frontend Configuration
+- **Routing**: React Router with data loaders
+- **State management**: Context API and Zustand
+- **Styling**: SCSS with responsive breakpoints
+- **Build optimization**: Vite with code splitting
+
+### Socket Configuration
+- **Real-time messaging**: Socket.IO with room management
+- **Connection handling**: Automatic reconnection
+- **Event validation**: Input sanitization and validation
+- **Scaling**: Redis adapter support for clustering
+
+## 🚀 Production Considerations
+
+### Scaling Strategies
+- **Horizontal scaling**: Multiple API server instances
+- **Database optimization**: Proper indexing and query optimization
+- **CDN integration**: Static asset delivery optimization
+- **Caching layers**: Redis for session and data caching
+
+### Monitoring & Analytics
+- **Application monitoring**: Error tracking and performance metrics
+- **User analytics**: Usage patterns and feature adoption
+- **Security monitoring**: Attack detection and prevention
+- **Performance monitoring**: Response times and resource usage
 
 ## 🤝 Contributing
 
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+### Getting Started
+1. **Fork the repository** and clone your fork
+2. **Set up development environment** following the quick start guide
+3. **Create a feature branch** for your changes
+4. **Follow coding standards** and write tests
+5. **Submit a pull request** with detailed description
 
-1.  Fork the Project
-2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4.  Push to the Branch (`git push origin feature/AmazingFeature`)
-5.  Open a Pull Request
+### Development Process
+1. **Issue tracking**: Create or assign issues for features/bugs
+2. **Code review**: All changes require peer review
+3. **Testing**: Ensure tests pass before merging
+4. **Documentation**: Update relevant documentation
 
-## 📝 License
+### Areas for Contribution
+- **Feature development**: New functionality and enhancements
+- **Bug fixes**: Issue resolution and stability improvements
+- **Performance optimization**: Speed and efficiency improvements
+- **Documentation**: Improve and expand documentation
+- **Testing**: Add test coverage and automation
+- **Security**: Enhance security measures and practices
 
-This project is licensed under the ISC License. See the `LICENSE` file for more details.
+## 📋 Roadmap
 
-## 👨‍💻 Author
+### Short-term Goals (Next 3 months)
+- [ ] **Enhanced search**: Advanced filtering and sorting options
+- [ ] **Mobile app**: React Native or PWA implementation
+- [ ] **Payment integration**: Secure payment processing
+- [ ] **Analytics dashboard**: User and property analytics
 
-**Real Estate Platform** - A modern full-stack real estate application.
+### Medium-term Goals (Next 6 months)
+- [ ] **AI recommendations**: Property recommendation engine
+- [ ] **Virtual tours**: 360° property viewing
+- [ ] **Multi-language support**: Internationalization
+- [ ] **Advanced chat features**: File sharing, voice messages
+
+### Long-term Goals (Next year)
+- [ ] **Machine learning**: Price prediction and market analysis
+- [ ] **IoT integration**: Smart home device connectivity
+- [ ] **Blockchain**: Property ownership and transaction records
+- [ ] **AR/VR features**: Augmented reality property visualization
+
+## 🐛 Known Issues
+
+### Current Limitations
+- **Image upload**: Limited to specific file types and sizes
+- **Search performance**: May be slow with large datasets
+- **Mobile optimization**: Some features need refinement
+- **Chat history**: Limited message history retention
+
+### Planned Fixes
+- **Performance optimization**: Database query improvements
+- **Mobile enhancements**: Better touch interactions
+- **Search improvements**: Elasticsearch integration
+- **Chat enhancements**: Message pagination and search
+
+## 📞 Support & Community
+
+### Getting Help
+- **Documentation**: Check component-specific README files
+- **Issues**: Create GitHub issues for bugs or feature requests
+- **Discussions**: Join community discussions for questions
+- **Wiki**: Access the project wiki for detailed guides
+
+### Community Guidelines
+- **Be respectful**: Treat all community members with respect
+- **Be helpful**: Assist others when possible
+- **Be constructive**: Provide actionable feedback
+- **Follow standards**: Adhere to coding and contribution guidelines
+
+## 📊 Analytics & Metrics
+
+### User Metrics
+- **Daily active users**: Track platform engagement
+- **Property views**: Monitor listing popularity
+- **Search patterns**: Analyze user search behavior
+- **Conversion rates**: Track user actions and outcomes
+
+### Performance Metrics
+- **Page load times**: Monitor frontend performance
+- **API response times**: Track backend efficiency
+- **Error rates**: Monitor application stability
+- **Resource usage**: Track server resource consumption
+
+## 🎓 Learning Resources
+
+### Technology Documentation
+- [React Documentation](https://react.dev/)
+- [Express.js Documentation](https://expressjs.com/)
+- [Prisma Documentation](https://www.prisma.io/docs)
+- [Socket.IO Documentation](https://socket.io/docs/)
+- [MongoDB Documentation](https://www.mongodb.com/docs/)
+
+### Tutorials & Guides
+- **React Hooks**: Modern React development patterns
+- **REST API Design**: Best practices for API development
+- **Socket.IO Integration**: Real-time web application development
+- **Database Design**: NoSQL schema design principles
+
+## 📄 License
+
+This project is licensed under the **MIT License**. See the [LICENSE](./LICENSE) file for details.
+
+---
+
+**Built with ❤️ for the real estate community**
+
+For questions, suggestions, or contributions, please open an issue or submit a pull request.

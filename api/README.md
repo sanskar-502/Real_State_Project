@@ -1,307 +1,366 @@
-# 🏠 Real Estate Platform - API Backend
+# Real Estate API Documentation
 
-This is the Node.js/Express backend API for the Real Estate Platform. It provides RESTful endpoints for property management, user authentication, and real-time messaging capabilities.
+A comprehensive Node.js/Express REST API for the real estate platform, providing authentication, property management, chat functionality, and geolocation services.
 
-## 🚀 Quick Start
+## 🚀 Features
 
-### Prerequisites
-- Node.js (v16 or higher)
+- **User Authentication & Authorization** with JWT tokens
+- **Property Management** (CRUD operations)
+- **Advanced Search & Filtering** with security validations
+- **Chat System** integration with Socket.IO
+- **Geocoding Services** for property locations
+- **File Upload Support** for property images
+- **Security Measures** against common vulnerabilities
+- **Database ORM** with Prisma and MongoDB
+
+## 📋 Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Environment Variables](#environment-variables)
+- [Database Setup](#database-setup)
+- [API Endpoints](#api-endpoints)
+- [Authentication](#authentication)
+- [Security Features](#security-features)
+- [Error Handling](#error-handling)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+
+## 🔧 Prerequisites
+
+- Node.js (v18 or higher)
 - MongoDB database
-- Cloudinary account (for image uploads)
+- npm or yarn package manager
 
-### Installation
-```bash
-cd api
-npm install
-```
+## 📦 Installation
 
-### Environment Setup
-Create a `.env` file in the api directory:
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/sanskar-502/Real_State_Project
+   cd Real_State_Project/api
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
+
+4. **Set up Prisma**
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+5. **Start the server**
+   ```bash
+   # Development mode
+   npm run dev
+   
+   # Production mode
+   npm start
+   ```
+
+## 🌍 Environment Variables
+
+Create a `.env` file in the root directory:
+
 ```env
-DATABASE_URL="your_mongodb_connection_string"
-JWT_SECRET="your_jwt_secret_key"
-CLOUDINARY_CLOUD_NAME="your_cloudinary_cloud_name"
-CLOUDINARY_API_KEY="your_cloudinary_api_key"
-CLOUDINARY_API_SECRET="your_cloudinary_api_secret"
-CLIENT_URL="http://localhost:5173"
+# Database
+DATABASE_URL="mongodb://username:password@localhost:27017/realestate"
+
+# JWT Secret
+JWT_SECRET_KEY="your-super-secure-jwt-secret-key"
+
+# CORS
+CLIENT_URL="http://localhost:3000"
+
+# Server
+PORT=8800
+
+# External APIs (if applicable)
+GEOCODING_API_KEY="your-geocoding-api-key"
 ```
 
-### Database Setup
+## 🗄️ Database Setup
+
+### Prisma Schema Overview
+
+The API uses MongoDB with Prisma ORM. Key models include:
+
+- **User**: Authentication and profile management
+- **Post**: Property listings with details
+- **PostDetail**: Extended property information
+- **SavedPost**: User's saved properties
+- **Chat**: Chat system for user communication
+- **Message**: Individual chat messages
+
+### Database Commands
+
 ```bash
+# Generate Prisma client
 npx prisma generate
+
+# Push schema to database
 npx prisma db push
+
+# View database in Prisma Studio
+npx prisma studio
+
+# Seed database (optional)
+npm run seed
 ```
 
-### Development
-```bash
-npm start
-```
+## 🛠️ API Endpoints
 
-The API server will be available at `http://localhost:8800`
+### Authentication Routes (`/api/auth`)
 
-## 🛠️ Tech Stack
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/register` | User registration | No |
+| POST | `/login` | User login | No |
+| POST | `/logout` | User logout | Yes |
 
-- **Node.js** - JavaScript runtime
-- **Express.js** - Web application framework
-- **Prisma** - Database ORM with MongoDB support
-- **MongoDB** - NoSQL database
-- **JWT** - JSON Web Tokens for authentication
-- **bcrypt** - Password hashing
-- **Cloudinary** - Image upload and management
-- **Socket.io** - Real-time messaging (separate server)
-
-## 📁 Project Structure
-
-```
-api/
-├── controllers/         # Route controllers
-│   ├── auth.controller.js    # Authentication logic
-│   ├── chat.controller.js    # Chat management
-│   ├── message.controller.js # Message handling
-│   ├── post.controller.js    # Property CRUD operations
-│   ├── test.controller.js    # Testing endpoints
-│   └── user.controller.js    # User management
-├── middleware/          # Custom middleware
-│   └── verifyToken.js   # JWT token verification
-├── routes/             # API route definitions
-│   ├── auth.route.js    # Authentication routes
-│   ├── chat.route.js    # Chat routes
-│   ├── message.route.js # Message routes
-│   ├── post.route.js    # Property routes
-│   ├── test.route.js    # Test routes
-│   └── user.route.js    # User routes
-├── prisma/             # Database configuration
-│   └── schema.prisma    # Database schema
-├── lib/                # Utility libraries
-│   └── prisma.js       # Prisma client configuration
-└── app.js              # Main server file
-```
-
-## 🔧 API Endpoints
-
-### Authentication (`/api/auth`)
-- `POST /register` - User registration
-- `POST /login` - User login
-- `POST /logout` - User logout
-
-### Users (`/api/users`)
-- `GET /:id` - Get user profile
-- `PUT /:id` - Update user profile
-- `DELETE /:id` - Delete user account
-
-### Posts (`/api/posts`)
-- `GET /` - Get all posts with filters
-- `POST /` - Create new property listing
-- `GET /:id` - Get single property
-- `PUT /:id` - Update property
-- `DELETE /:id` - Delete property
-
-### Chats (`/api/chats`)
-- `GET /` - Get user's chats
-- `POST /` - Create new chat
-
-### Messages (`/api/messages`)
-- `GET /:chatId` - Get chat messages
-- `POST /` - Send new message
-
-## 📊 Database Schema
-
-### User Model
-```prisma
-model User {
-  id         String      @id @default(auto()) @map("_id") @db.ObjectId
-  email      String      @unique
-  username   String      @unique
-  password   String
-  avatar     String?
-  createdAt  DateTime    @default(now())
-  posts      Post[]
-  savedPosts SavedPost[]
-  chats      Chat[]      @relation(fields: [chatIDs], references: [id])
-  chatIDs    String[]    @db.ObjectId
-}
-```
-
-### Post Model
-```prisma
-model Post {
-  id         String      @id @default(auto()) @map("_id") @db.ObjectId
-  title      String
-  price      Int
-  images     String[]
-  address    String
-  city       String
-  bedroom    Int
-  bathroom   Int
-  latitude   String
-  longitude  String
-  type       Type
-  property   Property
-  createdAt  DateTime    @default(now())
-  user       User        @relation(fields: [userId], references: [id])
-  userId     String      @db.ObjectId
-  postDetail PostDetail?
-  savedPosts SavedPost[]
-}
-```
-
-### Chat & Message Models
-```prisma
-model Chat {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  users     User[]    @relation(fields: [userIDs], references: [id])
-  userIDs   String[]  @db.ObjectId
-  createdAt DateTime  @default(now())
-  seenBy    String[]  @db.ObjectId
-  messages  Message[]
-  lastMessage String?
-}
-
-model Message {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  text      String
-  userId    String
-  chat      Chat     @relation(fields: [chatId], references: [id])
-  chatId    String   @db.ObjectId
-  createdAt DateTime @default(now())
-}
-```
-
-## 🔒 Security Features
-
-### Authentication
-- JWT-based authentication
-- Password hashing with bcrypt
-- Token verification middleware
-- Secure cookie handling
-
-### Data Validation
-- Input sanitization
-- Request validation
-- Error handling middleware
-
-### CORS Configuration
-- Cross-origin resource sharing
-- Credential support
-- Configurable origins
-
-## 🗄️ Database Operations
-
-### Prisma ORM
-- Type-safe database queries
-- Automatic migrations
-- Connection pooling
-- MongoDB integration
-
-### Key Operations
-- User CRUD operations
-- Property listing management
-- Chat and message handling
-- Image upload processing
-
-## 📡 Real-time Features
-
-### Socket.io Integration
-- Separate socket server for real-time messaging
-- Online user tracking
-- Message delivery notifications
-- Chat room management
-
-## 🚀 Performance Optimizations
-
-### Database
-- Indexed queries for better performance
-- Connection pooling
-- Efficient data relationships
-
-### API
-- Request rate limiting
-- Response caching
-- Optimized queries
-- Error handling
-
-## 🔧 Configuration
-
-### Environment Variables
-- `DATABASE_URL` - MongoDB connection string
-- `JWT_SECRET` - Secret key for JWT tokens
-- `CLOUDINARY_*` - Cloudinary configuration
-- `CLIENT_URL` - Frontend URL for CORS
-
-### Database Configuration
-- MongoDB Atlas or local MongoDB
-- Prisma schema management
-- Migration handling
-
-## 📝 API Documentation
-
-### Request/Response Format
-All API endpoints return JSON responses with the following structure:
+**Register Request:**
 ```json
 {
-  "success": true,
-  "data": {...},
-  "message": "Success message"
+  "username": "johndoe",
+  "email": "john@example.com",
+  "password": "securePassword123"
 }
 ```
 
-### Error Handling
+**Login Request:**
 ```json
 {
-  "success": false,
-  "error": "Error message",
+  "username": "johndoe",
+  "password": "securePassword123"
+}
+```
+
+### Property Routes (`/api/posts`)
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/` | Get all properties with filters | No |
+| GET | `/:id` | Get single property | No |
+| POST | `/` | Create new property | Yes |
+| PUT | `/:id` | Update property | Yes (Owner) |
+| DELETE | `/:id` | Delete property | Yes (Owner) |
+
+**Property Filters (Query Parameters):**
+- `city`: Filter by city name
+- `type`: Filter by listing type (buy/rent)
+- `property`: Filter by property type (apartment/house/condo/land)
+- `minPrice`: Minimum price filter
+- `maxPrice`: Maximum price filter
+- `bedroom`: Number of bedrooms
+
+**Create Property Request:**
+```json
+{
+  "postData": {
+    "title": "Beautiful 3BR Apartment",
+    "price": 500000,
+    "address": "123 Main St, Mumbai",
+    "city": "Mumbai",
+    "bedroom": 3,
+    "bathroom": 2,
+    "latitude": "19.0760",
+    "longitude": "72.8777",
+    "type": "buy",
+    "property": "apartment",
+    "images": ["image1.jpg", "image2.jpg"]
+  },
+  "postDetail": {
+    "desc": "Spacious apartment with great amenities",
+    "utilities": "Included",
+    "pet": "Allowed",
+    "income": "40000+",
+    "size": 1200,
+    "school": 5,
+    "bus": 2,
+    "restaurant": 8
+  }
+}
+```
+
+### User Routes (`/api/users`)
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/` | Get all users | Yes (Admin) |
+| GET | `/:id` | Get user profile | Yes |
+| PUT | `/:id` | Update user profile | Yes (Owner) |
+| DELETE | `/:id` | Delete user | Yes (Owner) |
+| POST | `/:id/save` | Save/unsave property | Yes |
+| GET | `/profile/posts` | Get user's properties | Yes |
+
+### Chat Routes (`/api/chats`)
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/` | Get user chats | Yes |
+| GET | `/:id` | Get single chat | Yes |
+| POST | `/` | Create new chat | Yes |
+| PUT | `/:id/read` | Mark chat as read | Yes |
+
+### Message Routes (`/api/messages`)
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/:chatId` | Add message to chat | Yes |
+
+### Geocoding Routes (`/api/geocode`)
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | `/search` | Geocode address | No |
+
+## 🔒 Authentication
+
+The API uses JWT (JSON Web Tokens) for authentication:
+
+1. **Registration/Login**: Returns JWT token in HTTP-only cookie
+2. **Protected Routes**: Require valid JWT token
+3. **Token Expiration**: Configurable expiration time
+4. **Middleware**: `verifyToken` middleware for route protection
+
+### Authentication Middleware
+
+```javascript
+// Protected route example
+app.use("/api/posts", verifyToken, postRoute);
+
+// Usage in controller
+const createPost = async (req, res) => {
+  // req.userId available after token verification
+  const newPost = await prisma.post.create({
+    data: {
+      ...postData,
+      userId: req.userId
+    }
+  });
+};
+```
+
+## 🛡️ Security Features
+
+### Input Validation & Sanitization
+
+- **Price Input Security**: Protection against integer overflow
+- **SQL Injection Prevention**: Parameterized queries via Prisma
+- **XSS Protection**: Input sanitization
+- **CORS Configuration**: Restricted to allowed origins
+
+### Price Filtering Security
+
+```javascript
+// Safe integer parsing with validation
+const safeParseInt = (value, max = 10000000000, min = 0) => {
+  // Multiple validation layers:
+  // 1. Length validation (max 15 digits)
+  // 2. Format validation (numeric only)
+  // 3. Range clamping (0 to 10 billion)
+  // 4. Overflow protection
+};
+```
+
+### Authentication Security
+
+- **Password Hashing**: bcrypt with salt rounds
+- **JWT Security**: Secure secret keys and expiration
+- **HTTP-only Cookies**: Prevents XSS attacks
+- **CORS Protection**: Restricted origins
+
+## ⚠️ Error Handling
+
+### Standard Error Response Format
+
+```json
+{
+  "message": "Error description",
+  "error": "Detailed error information",
   "statusCode": 400
 }
 ```
 
+### Common HTTP Status Codes
+
+- `200`: Success
+- `201`: Created
+- `400`: Bad Request (validation errors)
+- `401`: Unauthorized (authentication required)
+- `403`: Forbidden (insufficient permissions)
+- `404`: Not Found
+- `500`: Internal Server Error
+
 ## 🧪 Testing
 
-### Test Endpoints
-- `GET /api/test` - Health check
-- Additional test routes for development
+### Running Tests
 
-### Manual Testing
-- Use Postman or similar tools
-- Test all CRUD operations
-- Verify authentication flow
+```bash
+# Run all tests
+npm test
+
+# Run specific test file
+npm test -- security.test.js
+
+# Run tests in watch mode
+npm test -- --watch
+```
+
+### Test Categories
+
+- **Security Tests**: Integer overflow protection, input validation
+- **Authentication Tests**: Login, registration, token validation
+- **API Tests**: Endpoint functionality and error handling
+- **Integration Tests**: Database operations and middleware
 
 ## 🚀 Deployment
 
-### Production Setup
-1. Set up MongoDB Atlas
-2. Configure Cloudinary
-3. Set environment variables
-4. Deploy to hosting platform
+### Production Environment Variables
 
-### Environment Variables for Production
 ```env
-DATABASE_URL="mongodb+srv://..."
-JWT_SECRET="production_secret_key"
-CLOUDINARY_CLOUD_NAME="your_cloud_name"
-CLOUDINARY_API_KEY="your_api_key"
-CLOUDINARY_API_SECRET="your_api_secret"
-CLIENT_URL="https://your-frontend-domain.com"
+# Production settings
+NODE_ENV=production
+DATABASE_URL="mongodb+srv://user:pass@cluster.mongodb.net/realestate"
+JWT_SECRET_KEY="your-production-jwt-secret"
+CLIENT_URL="https://yourdomain.com"
+PORT=8800
 ```
 
-## 📊 Monitoring
+### Docker Deployment
 
-### Logging
-- Request logging
-- Error tracking
-- Performance monitoring
+```dockerfile
+FROM node:18-alpine
 
-### Health Checks
-- Database connectivity
-- API endpoint status
-- Service availability
+WORKDIR /app
 
-## 🤝 Contributing
+COPY package*.json ./
+RUN npm ci --only=production
 
-1. Follow the existing code style
-2. Add appropriate error handling
-3. Update API documentation
-4. Test all endpoints thoroughly
+COPY . .
+RUN npx prisma generate
 
-## 📝 License
+EXPOSE 8800
 
-This project is licensed under the ISC License. 
+CMD ["npm", "start"]
+```
+
+## 📞 Support
+
+For support and questions:
+- Create an issue in the repository
+- Check existing documentation
+- Review security measures for security-related questions
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

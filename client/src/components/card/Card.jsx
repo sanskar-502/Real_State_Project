@@ -127,7 +127,7 @@ function Card({ item }) {
                
                   navigate("/profile", { state: { openChat: res.data.id } });
                 } catch (err) {
-                  console.log(err);
+                  console.error(err);
                 }
               }}
             >

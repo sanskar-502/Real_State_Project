@@ -1,5 +1,18 @@
+// Mobile first approach with better breakpoints
+@mixin xs {
+  @media (max-width: 480px) {
+    @content;
+  }
+}
+
 @mixin sm {
-  @media (max-width: 738px) {
+  @media (max-width: 768px) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: 820px) {
     @content;
   }
 }
@@ -13,5 +26,22 @@
 @mixin lg {
   @media (max-width: 1366px) {
     @content;
+  }
+}
+
+// Helper mixins for mobile-specific optimizations
+@mixin touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+@mixin mobile-padding {
+  @include xs {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  @include sm {
+    padding-left: 20px;
+    padding-right: 20px;
   }
 }

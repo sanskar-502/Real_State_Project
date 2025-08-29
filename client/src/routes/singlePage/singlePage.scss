@@ -29,6 +29,15 @@
       margin-left: 0;
       padding: 32px 20px;
     }
+    
+    @include sm {
+      margin-left: 0;
+      padding: 24px 16px;
+    }
+    
+    @include xs {
+      padding: 20px 12px;
+    }
 
     .wrapper {
       display: flex;
@@ -68,6 +77,16 @@
               font-size: 2rem;
               color: #1a3c40;
               margin-bottom: 0;
+              
+              @include sm {
+                font-size: 1.6rem;
+                line-height: 1.2;
+              }
+              
+              @include xs {
+                font-size: 1.4rem;
+                line-height: 1.1;
+              }
             }
             .address {
               display: flex;
@@ -76,10 +95,24 @@
               color: #64748b;
               font-size: 1rem;
               font-weight: 500;
+              
+              @include sm {
+                font-size: 0.95rem;
+                flex-wrap: wrap;
+              }
+              
+              @include xs {
+                font-size: 0.9rem;
+              }
 
               img {
                 width: 18px;
                 height: 18px;
+                
+                @include xs {
+                  width: 16px;
+                  height: 16px;
+                }
               }
             }
             .price {
@@ -92,6 +125,16 @@
               font-weight: 700;
               box-shadow: 0 2px 8px rgba(59,177,155,0.08);
               letter-spacing: 1px;
+              
+              @include sm {
+                font-size: 1.3rem;
+                padding: 8px 20px;
+              }
+              
+              @include xs {
+                font-size: 1.2rem;
+                padding: 6px 16px;
+              }
             }
           }
           .user {
@@ -134,6 +177,18 @@
           border-radius: 12px;
           padding: 24px;
           box-shadow: 0 2px 8px rgba(59,177,155,0.04);
+          
+          @include sm {
+            font-size: 1rem;
+            padding: 20px;
+            line-height: 1.6;
+          }
+          
+          @include xs {
+            font-size: 0.95rem;
+            padding: 16px;
+            line-height: 1.5;
+          }
         }
       }
     }
@@ -153,6 +208,15 @@
     @include md {
       margin-right: 0;
       padding: 32px 20px;
+    }
+    
+    @include sm {
+      margin-right: 0;
+      padding: 24px 16px;
+    }
+    
+    @include xs {
+      padding: 20px 12px;
     }
 
     .wrapper {
@@ -276,15 +340,46 @@
           cursor: pointer;
           box-shadow: 0 2px 8px rgba(59,177,155,0.08);
           transition: background 0.2s, box-shadow 0.2s;
+          min-height: 48px;
 
           img {
             width: 20px;
             height: 20px;
+            
+            @include xs {
+              width: 18px;
+              height: 18px;
+            }
           }
 
           &:hover {
             background: linear-gradient(90deg, #3bb19b 0%, #1a3c40 100%);
             box-shadow: 0 4px 16px rgba(59,177,155,0.12);
+          }
+          
+          @include sm {
+            padding: 14px 0;
+            font-size: 1rem;
+            min-height: 44px;
+          }
+          
+          @include xs {
+            padding: 12px 0;
+            font-size: 0.95rem;
+            gap: 8px;
+          }
+          
+          @media (hover: none) {
+            &:hover {
+              background: linear-gradient(90deg, #1a3c40 0%, #3bb19b 100%);
+              box-shadow: 0 2px 8px rgba(59,177,155,0.08);
+            }
+            
+            &:active {
+              background: linear-gradient(90deg, #3bb19b 0%, #1a3c40 100%);
+              box-shadow: 0 4px 16px rgba(59,177,155,0.12);
+              transform: scale(0.98);
+            }
           }
         }
         button:last-child {
@@ -298,6 +393,21 @@
             background: #fef9c3;
             color: #3bb19b;
             box-shadow: 0 4px 16px rgba(254, 206, 81, 0.12);
+          }
+          
+          @media (hover: none) {
+            &:hover {
+              background: #fff;
+              color: #1a3c40;
+              box-shadow: 0 2px 8px rgba(254, 206, 81, 0.08);
+            }
+            
+            &:active {
+              background: #fef9c3;
+              color: #3bb19b;
+              box-shadow: 0 4px 16px rgba(254, 206, 81, 0.12);
+              transform: scale(0.98);
+            }
           }
         }
       }

@@ -80,12 +80,17 @@ export const getChat = async (req, res) => {
       return res.status(404).json({ message: "Chat not found" });
     }
 
-    // Mark messages as seen
+    // Mark messages as seen (only ones not already seen by this user)
     await prisma.message.updateMany({
       where: {
         chatId: chat.id,
         NOT: {
           senderId: tokenUserId,
+        },
+        NOT: {
+          seenBy: {
+            hasSome: [tokenUserId],
+          },
         },
       },
       data: {
@@ -94,6 +99,20 @@ export const getChat = async (req, res) => {
         },
       },
     });
+
+    // Mark chat as seen (only if not already seen)
+    if (!chat.seenBy.includes(tokenUserId)) {
+      await prisma.chat.update({
+        where: {
+          id: chat.id,
+        },
+        data: {
+          seenBy: {
+            push: tokenUserId,
+          },
+        },
+      });
+    }
 
     // Get receiver information
     const receiverId = chat.userIDs.find(id => id !== tokenUserId);
@@ -179,12 +198,31 @@ export const readChat = async (req, res) => {
   const tokenUserId = req.userId;
 
   try {
-    // Mark all messages in the chat as read
+    // First, get the current chat to check existing seenBy arrays
+    const currentChat = await prisma.chat.findFirst({
+      where: {
+        id: req.params.id,
+        userIDs: {
+          hasSome: [tokenUserId],
+        },
+      },
+    });
+
+    if (!currentChat) {
+      return res.status(404).json({ message: "Chat not found" });
+    }
+
+    // Only update messages that aren't already seen by this user
     await prisma.message.updateMany({
       where: {
         chatId: req.params.id,
         NOT: {
           senderId: tokenUserId,
+        },
+        NOT: {
+          seenBy: {
+            hasSome: [tokenUserId],
+          },
         },
       },
       data: {
@@ -194,6 +232,21 @@ export const readChat = async (req, res) => {
       },
     });
 
+    // Only update chat if user hasn't already seen it
+    if (!currentChat.seenBy.includes(tokenUserId)) {
+      await prisma.chat.update({
+        where: {
+          id: req.params.id,
+        },
+        data: {
+          seenBy: {
+            push: tokenUserId,
+          },
+        },
+      });
+    }
+
+    // Get updated chat data
     const chat = await prisma.chat.findFirst({
       where: {
         id: req.params.id,

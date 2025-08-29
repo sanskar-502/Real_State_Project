@@ -17,6 +17,18 @@
     transform: translateY(-4px);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
   }
+  
+  @media (hover: none) {
+    &:hover {
+      transform: none;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    }
+    
+    &:active {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    }
+  }
 
   .imageContainer {
     position: relative;
@@ -28,6 +40,10 @@
     }
 
     @include sm {
+      height: 180px;
+    }
+    
+    @include xs {
       height: 160px;
     }
 
@@ -40,6 +56,12 @@
 
     &:hover img {
       transform: scale(1.05);
+    }
+    
+    @media (hover: none) {
+      &:hover img {
+        transform: none;
+      }
     }
 
     .propertyType {
@@ -87,6 +109,11 @@
         font-size: 1rem;
         padding: 6px 12px;
       }
+      
+      @include xs {
+        font-size: 0.9rem;
+        padding: 5px 10px;
+      }
     }
   }
 
@@ -121,9 +148,23 @@
       @include sm {
         font-size: 0.95rem;
       }
+      
+      @include xs {
+        font-size: 0.9rem;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: initial;
+        line-height: 1.3;
+      }
 
       &:hover {
         color: #3bb19b;
+      }
+      
+      @media (hover: none) {
+        &:hover {
+          color: #1a3c40;
+        }
       }
 
       span {
@@ -160,9 +201,14 @@
       gap: 12px;
       margin-bottom: 16px;
 
-      @include sm {
-        gap: 10px;
-      }
+        @include sm {
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+        
+        @include xs {
+          gap: 8px;
+        }
 
       .feature {
         display: flex;
@@ -179,6 +225,11 @@
         @include sm {
           padding: 5px 8px;
           font-size: 0.75rem;
+        }
+        
+        @include xs {
+          padding: 4px 6px;
+          font-size: 0.7rem;
         }
 
         img {
@@ -253,9 +304,19 @@
           }
 
           @include sm {
-            width: 32px;
-            height: 32px;
-
+            width: 38px;
+            height: 38px;
+            
+            img {
+              width: 18px;
+              height: 18px;
+            }
+          }
+          
+          @include xs {
+            width: 36px;
+            height: 36px;
+            
             img {
               width: 16px;
               height: 16px;
@@ -269,6 +330,28 @@
             border-color: #3bb19b;
             img {
               filter: brightness(0) invert(1);
+            }
+          }
+          
+          @media (hover: none) {
+            &:hover {
+              transform: none;
+              background: #fff;
+              box-shadow: none;
+              border-color: #e2e8f0;
+              img {
+                filter: none;
+              }
+            }
+            
+            &:active {
+              transform: scale(0.95);
+              background: linear-gradient(90deg, #3bb19b 0%, #1a3c40 100%);
+              box-shadow: 0 2px 8px rgba(59,177,155,0.12);
+              border-color: #3bb19b;
+              img {
+                filter: brightness(0) invert(1);
+              }
             }
           }
 
