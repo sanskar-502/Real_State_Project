@@ -48,7 +48,7 @@ function Navbar() {
             <a href="/login">Sign in</a>
           )
         )}
-        <div className="menuIcon">
+        <div className={open ? "menuIcon hidden" : "menuIcon"}>
           <img
             src="/menu.png"
             alt="Menu"

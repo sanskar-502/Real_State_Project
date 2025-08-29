@@ -259,6 +259,13 @@ nav {
         align-items: center;
         justify-content: center;
       }
+      
+      // Hide menu icon when sidebar is open
+      &.hidden {
+        opacity: 0;
+        pointer-events: none;
+        transform: scale(0.8);
+      }
     }
 
     .menu {
@@ -281,6 +288,7 @@ nav {
       font-size: 20px;
       box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
       z-index: 998;
+      overflow: visible; // Ensure close button is not clipped
       
       @include xs {
         width: 85%;
@@ -307,6 +315,7 @@ nav {
         align-items: center;
         justify-content: center;
         transition: all 0.2s ease;
+        z-index: 1001; // Higher than menu and menuIcon to ensure visibility
         
         &:hover {
           background: rgba(0, 0, 0, 0.05);
