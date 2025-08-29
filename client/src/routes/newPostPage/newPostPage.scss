@@ -255,6 +255,36 @@
         background: #f0fdfa;
       }
 
+      // Move upload button slightly downward
+      .cloudinary-button {
+        margin-top: 16px;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #1a3c40 0%, #3bb19b 100%);
+        color: #fff;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(59, 177, 155, 0.2);
+
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(59, 177, 155, 0.3);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+
+        @include sm {
+          margin-top: 12px;
+          padding: 10px 20px;
+          font-size: 0.9rem;
+        }
+      }
+
       .uploadIcon {
         width: 48px;
         height: 48px;

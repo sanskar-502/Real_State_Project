@@ -12,6 +12,7 @@ import { listPageLoader, profilePageLoader, singlePageLoader } from "./lib/loade
 import AboutPage from "./routes/aboutPage/aboutPage";
 import ContactPage from "./routes/contactPage/contactPage";
 import AgentPage from "./routes/agentPage/agentPage";
+import NotFoundPage from "./routes/notFoundPage/notFoundPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -54,6 +55,14 @@ function App() {
           path: "/register",
           element: <Register />,
         },
+        {
+          path: "/404",
+          element: <NotFoundPage />,
+        },
+        {
+          path: "*",
+          element: <NotFoundPage />,
+        },
       ],
     },
     {
@@ -72,6 +81,10 @@ function App() {
         {
           path: "/add",
           element: <NewPostPage />,
+        },
+        {
+          path: "*",
+          element: <NotFoundPage />,
         },
       ],
     },

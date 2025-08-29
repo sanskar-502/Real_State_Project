@@ -1,11 +1,12 @@
 import { useContext, useState } from "react";
 import "./navbar.scss";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { useNotificationStore } from "../../lib/notificationStore";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
+  const location = useLocation();
 
   const { currentUser } = useContext(AuthContext);
 
@@ -29,7 +30,12 @@ function Navbar() {
       <div className="right">
         {currentUser ? (
           <div className="user">
-            <img src={currentUser.avatar || "/noavatar.jpg"} alt="" />
+            <div className="profileImageWrapper">
+              <Link to="/profile" className="profileImageLink">
+                <img src={currentUser.avatar || "/noavatar.jpg"} alt="Profile" />
+                {number > 0 && <div className="notification">{number}</div>}
+              </Link>
+            </div>
             <span>{currentUser.username}</span>
             <Link to="/profile" className="profile">
               {number > 0 && <div className="notification">{number}</div>}
@@ -37,12 +43,10 @@ function Navbar() {
             </Link>
           </div>
         ) : (
-          <>
+          // Hide Sign in button if user is on login or register page
+          location.pathname !== "/login" && location.pathname !== "/register" && (
             <a href="/login">Sign in</a>
-            <a href="/register" className="register">
-              Sign up
-            </a>
-          </>
+          )
         )}
         <div className="menuIcon">
           <img
@@ -61,11 +65,8 @@ function Navbar() {
             <Link to="/about" onClick={() => setOpen(false)}>About</Link>
             <Link to="/contact" onClick={() => setOpen(false)}>Contact</Link>
             <Link to="/agents" onClick={() => setOpen(false)}>Agents</Link>
-            {!currentUser && (
-              <>
-                <Link to="/login" onClick={() => setOpen(false)}>Sign in</Link>
-                <Link to="/register" onClick={() => setOpen(false)}>Sign up</Link>
-              </>
+            {!currentUser && location.pathname !== "/login" && location.pathname !== "/" && location.pathname !== "/register" && (
+              <Link to="/login" onClick={() => setOpen(false)}>Sign in</Link>
             )}
             {currentUser && (
               <Link to="/profile" onClick={() => setOpen(false)}>Profile</Link>

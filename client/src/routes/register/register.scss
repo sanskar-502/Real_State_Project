@@ -1,6 +1,12 @@
+@import "../../responsive.scss";
+
 .registerPage {
   height: 100%;
   display: flex;
+  
+  @include sm {
+    flex-direction: column;
+  }
 
   .formContainer {
     flex: 3;
@@ -22,6 +28,21 @@
       gap: 20px;
       align-items: stretch;
       margin-top: 25px;
+      
+      @include sm {
+        min-width: 280px;
+        max-width: 90%;
+        padding: 32px 24px 24px 24px;
+        margin: 20px auto;
+        border-radius: 12px;
+      }
+      
+      @include xs {
+        min-width: 260px;
+        max-width: 95%;
+        padding: 24px 20px 20px 20px;
+        margin: 16px auto;
+      }
     }
 
     .registerTitle {
@@ -30,6 +51,14 @@
       margin-bottom: 0;
       color: #1a3c40;
       text-align: center;
+      
+      @include sm {
+        font-size: 1.75rem;
+      }
+      
+      @include xs {
+        font-size: 1.5rem;
+      }
     }
 
     .registerDesc {
@@ -54,9 +83,20 @@
         border-radius: 6px;
         font-size: 1rem;
         transition: border 0.2s;
+        min-height: 44px;
+        
         &:focus {
           border: 1.5px solid #1a3c40;
           outline: none;
+        }
+        
+        @include sm {
+          font-size: 16px; // Prevent zoom on iOS
+          padding: 16px 14px;
+        }
+        
+        @include xs {
+          padding: 14px 12px;
         }
       }
     }
@@ -77,13 +117,40 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      min-height: 48px;
+      
       &:hover:not(:disabled) {
         background: linear-gradient(90deg, #3bb19b 0%, #1a3c40 100%);
         box-shadow: 0 4px 16px rgba(59,177,155,0.12);
       }
+      
       &:disabled {
         background: #bed9d8;
         cursor: not-allowed;
+      }
+      
+      @media (hover: none) {
+        &:hover:not(:disabled) {
+          background: linear-gradient(90deg, #1a3c40 0%, #3bb19b 100%);
+          box-shadow: 0 2px 8px rgba(59,177,155,0.08);
+        }
+        
+        &:active:not(:disabled) {
+          background: linear-gradient(90deg, #3bb19b 0%, #1a3c40 100%);
+          box-shadow: 0 4px 16px rgba(59,177,155,0.12);
+          transform: scale(0.98);
+        }
+      }
+      
+      @include sm {
+        padding: 16px;
+        font-size: 1rem;
+        min-height: 44px;
+      }
+      
+      @include xs {
+        padding: 14px;
+        font-size: 0.95rem;
       }
     }
 
@@ -139,8 +206,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    
     img {
       width: 100%;
+    }
+    
+    @include sm {
+      display: none;
     }
   }
 }

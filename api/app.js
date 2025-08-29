@@ -7,6 +7,7 @@ import userRoute from "./routes/user.route.js";
 import chatRoute from "./routes/chat.route.js";
 import messageRoute from "./routes/message.route.js";
 import geocodeRoute from "./routes/geocode.route.js";
+import { notFoundHandler, errorHandler } from "./middleware/notFound.js";
 import dotenv from "dotenv";
 
 dotenv.config(); 
@@ -26,6 +27,12 @@ app.use("/api/posts", postRoute);
 app.use("/api/chats", chatRoute);
 app.use("/api/messages", messageRoute);
 app.use("/api/geocode", geocodeRoute);
+
+// 404 Handler - Must be after all routes
+app.use(notFoundHandler);
+
+// Global Error Handler - Must be last
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 8800;
 

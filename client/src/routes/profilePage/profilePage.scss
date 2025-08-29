@@ -208,7 +208,28 @@
     
     @include sm {
       flex-direction: column;
-      gap: 10px;
+      gap: 16px;
+      align-items: center;
+      
+      .primary, .secondary {
+        width: 70%;
+        max-width: 280px;
+        padding: 14px 24px;
+        font-size: 1rem;
+        font-weight: 600;
+        min-height: 48px;
+        border-radius: 12px;
+      }
+    }
+    
+    @include xs {
+      .primary, .secondary {
+        width: 80%;
+        max-width: 240px;
+        padding: 12px 20px;
+        font-size: 0.95rem;
+        min-height: 44px;
+      }
     }
   }
 }

@@ -118,8 +118,23 @@ export const getPosts = async (req, res) => {
   }
 };
 
+// Helper function to validate MongoDB ObjectID
+const isValidObjectId = (id) => {
+  // MongoDB ObjectID is exactly 24 characters long and contains only hexadecimal characters
+  return /^[0-9a-fA-F]{24}$/.test(id);
+};
+
 export const getPost = async (req, res) => {
   const id = req.params.id;
+  
+  // Validate ObjectID format before querying database
+  if (!isValidObjectId(id)) {
+    return res.status(404).json({ 
+      message: "Post not found",
+      error: "Invalid post ID format" 
+    });
+  }
+  
   try {
     const post = await prisma.post.findUnique({
       where: { id },

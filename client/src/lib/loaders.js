@@ -1,9 +1,37 @@
-import { defer } from "react-router-dom";
+import { defer, redirect } from "react-router-dom";
 import apiRequest from "./apiRequest";
 
+// Helper function to validate MongoDB ObjectID format
+const isValidObjectId = (id) => {
+  return /^[0-9a-fA-F]{24}$/.test(id);
+};
+
 export const singlePageLoader = async ({ request, params }) => {
-  const res = await apiRequest("/posts/" + params.id);
-  return res.data;
+  try {
+    // Check if the ID format is valid before making the API call
+    if (!isValidObjectId(params.id)) {
+      // Redirect to 404 page for invalid ID format
+      throw redirect("/404");
+    }
+    
+    const res = await apiRequest("/posts/" + params.id);
+    return res.data;
+  } catch (error) {
+    // If it's already a redirect, re-throw it
+    if (error.status === 302 || error instanceof Response) {
+      throw error;
+    }
+    
+    // Handle API errors (404, 500, etc.)
+    if (error.response && error.response.status === 404) {
+      // Redirect to 404 page for posts that don't exist
+      throw redirect("/404");
+    }
+    
+    // For other errors, still redirect to 404
+    console.error("Error loading post:", error);
+    throw redirect("/404");
+  }
 };
 export const listPageLoader = async ({ request, params }) => {
   const query = request.url.split("?")[1];
