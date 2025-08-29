@@ -90,7 +90,7 @@ function SearchBar({ query, setQuery }) {
         <input
           type="text"
           name="city"
-          placeholder="City (Press Enter to search)"
+          placeholder="City"
           value={query.city}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
