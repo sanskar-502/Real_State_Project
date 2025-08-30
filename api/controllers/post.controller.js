@@ -3,13 +3,10 @@ import jwt from "jsonwebtoken";
 
 export const getPosts = async (req, res) => {
   const query = req.query;
-  console.log("\n=== Search Debug Info ===");
-  console.log("1. Search query received:", query);
 
   try {
     const where = {};
     
-    // Input validation: check for malicious or extremely large inputs
     for (const [key, value] of Object.entries(query)) {
       if (typeof value === 'string' && value.length > 1000) {
         console.warn(`Suspicious input detected for ${key}: length ${value.length}`);
@@ -40,34 +37,28 @@ export const getPosts = async (req, res) => {
       where.property = query.property;
     }
 
-    // Safe integer parsing with validation
     const safeParseInt = (value, max = 10000000000, min = 0) => {
       if (!value || value === '' || value === null || value === undefined) return null;
       
-      // Convert to string and check length to prevent parsing extremely large numbers
       const strValue = String(value).trim();
       
-      // If the number has more than 15 digits, it's too large
       if (strValue.length > 15) {
         console.warn(`Number too large, clamping to max: ${strValue}`);
         return max;
       }
       
-      // Check for non-numeric characters (except for leading + or -)
       if (!/^[+-]?\d+$/.test(strValue)) {
         console.warn(`Invalid number format: ${strValue}`);
         return null;
       }
       
       const parsed = parseInt(strValue, 10);
-      
-      // Check if parsing resulted in Infinity, -Infinity, or NaN
+
       if (!Number.isFinite(parsed) || isNaN(parsed)) {
         console.warn(`Invalid parsed number: ${parsed} from ${strValue}`);
         return null;
       }
       
-      // Clamp the value to the specified range
       if (parsed < min) return min;
       if (parsed > max) return max;
       
@@ -75,7 +66,7 @@ export const getPosts = async (req, res) => {
     };
 
     if (query.bedroom) {
-      const bedroom = safeParseInt(query.bedroom, 20, 1); // Max 20 bedrooms, min 1
+      const bedroom = safeParseInt(query.bedroom, 20, 1); 
       if (bedroom !== null) where.bedroom = bedroom;
     }
 
@@ -83,18 +74,17 @@ export const getPosts = async (req, res) => {
       where.price = {};
       
       if (query.minPrice) {
-        const minPrice = safeParseInt(query.minPrice, 10000000000, 0); // Max 10 billion, min 0
+        const minPrice = safeParseInt(query.minPrice, 10000000000, 0); 
         if (minPrice !== null) where.price.gte = minPrice;
       }
       
       if (query.maxPrice) {
-        const maxPrice = safeParseInt(query.maxPrice, 10000000000, 0); // Max 10 billion, min 0
+        const maxPrice = safeParseInt(query.maxPrice, 10000000000, 0); 
         if (maxPrice !== null) where.price.lte = maxPrice;
       }
       
-      // If both prices are set, ensure minPrice <= maxPrice
       if (where.price.gte && where.price.lte && where.price.gte > where.price.lte) {
-        // Swap the values if min > max
+
         const temp = where.price.gte;
         where.price.gte = where.price.lte;
         where.price.lte = temp;
@@ -118,16 +108,13 @@ export const getPosts = async (req, res) => {
   }
 };
 
-// Helper function to validate MongoDB ObjectID
 const isValidObjectId = (id) => {
-  // MongoDB ObjectID is exactly 24 characters long and contains only hexadecimal characters
   return /^[0-9a-fA-F]{24}$/.test(id);
 };
 
 export const getPost = async (req, res) => {
   const id = req.params.id;
   
-  // Validate ObjectID format before querying database
   if (!isValidObjectId(id)) {
     return res.status(404).json({ 
       message: "Post not found",
@@ -164,7 +151,6 @@ export const getPost = async (req, res) => {
         const userInfo = jwt.verify(token, process.env.JWT_SECRET_KEY);
         userId = userInfo.id;
         
-        // Check if post is saved by current user
         const savedPost = await prisma.savedPost.findFirst({
           where: {
             postId: id,
@@ -178,7 +164,6 @@ export const getPost = async (req, res) => {
       }
     }
 
-    // Remove savedPosts array from response
     const { savedPosts, ...postData } = post;
 
     res.status(200).json({
@@ -198,7 +183,6 @@ export const addPost = async (req, res) => {
   try {
     console.log("Creating post with userId:", req.userId);
     
-    // Create post with connect instead of just setting userId
     const newPost = await prisma.post.create({
       data: {
         ...postData,
@@ -244,7 +228,6 @@ export const updatePost = async (req, res) => {
   const updates = req.body;
   
   try {
-    // First check if the post exists and belongs to the user
     const existingPost = await prisma.post.findUnique({
       where: { id },
       select: { userId: true }
@@ -258,7 +241,6 @@ export const updatePost = async (req, res) => {
       return res.status(403).json({ message: "Not authorized to update this post" });
     }
 
-    // Separate Post fields from PostDetail fields
     const postFields = {
       title: updates.title,
       price: updates.price ? parseInt(updates.price) : undefined,
@@ -273,7 +255,6 @@ export const updatePost = async (req, res) => {
       images: updates.images,
     };
 
-    // PostDetail fields
     const postDetailFields = {
       desc: updates.desc,
       utilities: updates.utilities,
@@ -285,7 +266,6 @@ export const updatePost = async (req, res) => {
       restaurant: updates.restaurant ? parseFloat(updates.restaurant) : undefined,
     };
 
-    // Remove undefined fields
     Object.keys(postFields).forEach(key => {
       if (postFields[key] === undefined) {
         delete postFields[key];
@@ -298,7 +278,6 @@ export const updatePost = async (req, res) => {
       }
     });
 
-    // Prepare the update data
     const updateData = {
       ...postFields,
       postDetail: {
@@ -332,7 +311,6 @@ export const deletePost = async (req, res) => {
   const id = req.params.id;
   
   try {
-    // First check if the post exists and belongs to the user
     const existingPost = await prisma.post.findUnique({
       where: { id },
       select: { userId: true }
@@ -346,18 +324,14 @@ export const deletePost = async (req, res) => {
       return res.status(403).json({ message: "Not authorized to delete this post" });
     }
 
-    // Delete the post and all related records
-    // First delete any SavedPost records that reference this post
     await prisma.savedPost.deleteMany({
       where: { postId: id }
     });
 
-    // Then delete the PostDetail using postId reference
     await prisma.postDetail.delete({
       where: { postId: id }
     });
 
-    // Finally delete the post itself
     await prisma.post.delete({
       where: { id }
     });

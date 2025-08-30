@@ -42,7 +42,7 @@ export const login = async (req, res) => {
     if (!isPasswordValid)
       return res.status(400).json({ message: "Invalid Credentials!" });
 
-    const age = 1000 * 60 * 60 * 24 * 7; // 7 days
+    const age = 1000 * 60 * 60 * 24 * 7; 
 
     const token = jwt.sign(
       {
@@ -60,8 +60,8 @@ export const login = async (req, res) => {
       .cookie("token", token, {
         httpOnly: true,
         maxAge: age,
-        secure: true,      // ✅ For HTTPS
-        sameSite: "none",  // ✅ For cross-site requests
+        secure: true,     
+        sameSite: "none",  
       })
       .status(200)
       .json(userInfo);

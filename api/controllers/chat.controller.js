@@ -1,7 +1,7 @@
 import prisma from "../lib/prisma.js";
 
 export const getChats = async (req, res) => {
-  const tokenUserId = req.userId; // Using userId from middleware
+  const tokenUserId = req.userId; 
 
   try {
     const chats = await prisma.chat.findMany({
@@ -80,7 +80,6 @@ export const getChat = async (req, res) => {
       return res.status(404).json({ message: "Chat not found" });
     }
 
-    // Mark messages as seen (only ones not already seen by this user)
     await prisma.message.updateMany({
       where: {
         chatId: chat.id,
@@ -100,7 +99,7 @@ export const getChat = async (req, res) => {
       },
     });
 
-    // Mark chat as seen (only if not already seen)
+  
     if (!chat.seenBy.includes(tokenUserId)) {
       await prisma.chat.update({
         where: {
@@ -114,7 +113,7 @@ export const getChat = async (req, res) => {
       });
     }
 
-    // Get receiver information
+  
     const receiverId = chat.userIDs.find(id => id !== tokenUserId);
     const receiver = await prisma.user.findUnique({
       where: {
@@ -146,7 +145,6 @@ export const addChat = async (req, res) => {
   }
 
   try {
-    // Check if receiver exists
     const receiver = await prisma.user.findUnique({
       where: { id: receiverId },
       select: {
@@ -160,7 +158,7 @@ export const addChat = async (req, res) => {
       return res.status(404).json({ message: "Receiver not found" });
     }
 
-    // Check if chat already exists
+    
     const existingChat = await prisma.chat.findFirst({
       where: {
         userIDs: {
@@ -176,11 +174,10 @@ export const addChat = async (req, res) => {
       });
     }
 
-    // Create new chat
     const newChat = await prisma.chat.create({
       data: {
         userIDs: [tokenUserId, receiverId],
-        seenBy: [tokenUserId], // Mark as seen by creator
+        seenBy: [tokenUserId], 
       },
     });
     
@@ -198,7 +195,6 @@ export const readChat = async (req, res) => {
   const tokenUserId = req.userId;
 
   try {
-    // First, get the current chat to check existing seenBy arrays
     const currentChat = await prisma.chat.findFirst({
       where: {
         id: req.params.id,
@@ -212,7 +208,6 @@ export const readChat = async (req, res) => {
       return res.status(404).json({ message: "Chat not found" });
     }
 
-    // Only update messages that aren't already seen by this user
     await prisma.message.updateMany({
       where: {
         chatId: req.params.id,
@@ -232,7 +227,6 @@ export const readChat = async (req, res) => {
       },
     });
 
-    // Only update chat if user hasn't already seen it
     if (!currentChat.seenBy.includes(tokenUserId)) {
       await prisma.chat.update({
         where: {
@@ -246,7 +240,6 @@ export const readChat = async (req, res) => {
       });
     }
 
-    // Get updated chat data
     const chat = await prisma.chat.findFirst({
       where: {
         id: req.params.id,
@@ -260,7 +253,6 @@ export const readChat = async (req, res) => {
       return res.status(404).json({ message: "Chat not found" });
     }
 
-    // Get receiver information
     const receiverId = chat.userIDs.find(id => id !== tokenUserId);
     const receiver = await prisma.user.findUnique({
       where: {

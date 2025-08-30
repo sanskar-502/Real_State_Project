@@ -65,7 +65,6 @@ export const savePost = async (req, res) => {
   }
 
   try {
-    // First check if post exists
     const post = await prisma.post.findUnique({
       where: { id: postId }
     });
@@ -74,7 +73,6 @@ export const savePost = async (req, res) => {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    // Check if post is already saved
     const savedPost = await prisma.savedPost.findFirst({
       where: {
         AND: [
@@ -85,7 +83,6 @@ export const savePost = async (req, res) => {
     });
 
     if (savedPost) {
-      // Post is already saved, so unsave it
       await prisma.savedPost.delete({
         where: {
           id: savedPost.id
@@ -98,7 +95,7 @@ export const savePost = async (req, res) => {
       });
     }
 
-    // Save the post
+    
     await prisma.savedPost.create({
       data: {
         userId: tokenUserId,
@@ -121,7 +118,6 @@ export const profilePosts = async (req, res) => {
   const tokenUserId = req.userId;
 
   try {
-    // Get user's posts and saved posts in parallel
     const [userPosts, savedPostsData] = await Promise.all([
       prisma.post.findMany({
         where: { userId: tokenUserId },
@@ -153,7 +149,6 @@ export const profilePosts = async (req, res) => {
       })
     ]);
 
-    // Extract and expand posts from savedPosts data
     const savedPosts = savedPostsData
       .filter(item => item.post !== null)
       .map(item => ({
@@ -175,7 +170,6 @@ export const profilePosts = async (req, res) => {
         postDetail: item.post.postDetail
       }));
 
-    // Get user's posts with full details
     const userPostsWithDetails = await Promise.all(
       userPosts.map(async (post) => {
         const postDetail = await prisma.postDetail.findUnique({
