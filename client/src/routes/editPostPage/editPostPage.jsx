@@ -1,21 +1,51 @@
-import { useState } from "react";
-import "./newPostPage.scss";
+import { useState, useEffect } from "react";
+import "./editPostPage.scss";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import apiRequest from "../../lib/apiRequest";
 import UploadWidget from "../../components/uploadWidget/UploadWidget";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-function NewPostPage() {
+function EditPostPage() {
   const [value, setValue] = useState("");
   const [images, setImages] = useState([]);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [postData, setPostData] = useState(null);
 
   const navigate = useNavigate();
+  const { id } = useParams();
+
+  // Load existing post data
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await apiRequest.get(`/posts/${id}`);
+        const post = response.data;
+        
+        // Check if user owns this post
+        if (!post.isOwner) {
+          navigate("/404");
+          return;
+        }
+        
+        setPostData(post);
+        setValue(post.postDetail.desc || "");
+        setImages(post.images || []);
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Error fetching post:", err);
+        setError("Failed to load post data");
+        setIsLoading(false);
+      }
+    };
+
+    fetchPost();
+  }, [id, navigate]);
 
   // Safe integer parsing function
-  const safeParseInt = (value, max = 10000000000, min = 1) => {
+  const safeParseInt = (value, max = 10000000000, min = 0) => {
     if (!value || value === '') return 0;
     const parsed = parseInt(value);
     if (isNaN(parsed)) return 0;
@@ -42,44 +72,42 @@ function NewPostPage() {
     const inputs = Object.fromEntries(formData);
 
     // Validate large numbers before sending
-    const price = safeParseInt(inputs.price, 10000000000, 1);
-    const size = safeParseInt(inputs.size, 100000000, 1); // Max 100M sqft, min 1
-    const bedroom = safeParseInt(inputs.bedroom, 20, 1); // Max 20 bedrooms
-    const bathroom = safeParseInt(inputs.bathroom, 20, 1); // Max 20 bathrooms
+    const price = safeParseInt(inputs.price);
+    const size = safeParseInt(inputs.size, 100000000, 1);
+    const bedroom = safeParseInt(inputs.bedroom, 20, 1);
+    const bathroom = safeParseInt(inputs.bathroom, 20, 1);
 
-    if (!inputs.price || price === 0) {
-      setError("Please enter a valid price (minimum ₹1).");
+    if (price === 0) {
+      setError("Please enter a valid price.");
       setIsSubmitting(false);
       return;
     }
 
     try {
-      const res = await apiRequest.post("/posts", {
-        postData: {
-          title: inputs.title,
-          price: price,
-          address: inputs.address,
-          city: inputs.city,
-          bedroom: bedroom,
-          bathroom: bathroom,
-          type: inputs.type,
-          property: inputs.property,
-          latitude: inputs.latitude,
-          longitude: inputs.longitude,
-          images: images,
-        },
-        postDetail: {
-          desc: value,
-          utilities: inputs.utilities,
-          pet: inputs.pet,
-          income: inputs.income,
-          size: size,
-          school: safeParseFloat(inputs.school),
-          bus: safeParseFloat(inputs.bus),
-          restaurant: safeParseFloat(inputs.restaurant),
-        },
-      });
-      navigate("/" + res.data.id);
+      const updateData = {
+        title: inputs.title,
+        price: price,
+        address: inputs.address,
+        city: inputs.city,
+        bedroom: bedroom,
+        bathroom: bathroom,
+        type: inputs.type,
+        property: inputs.property,
+        latitude: inputs.latitude,
+        longitude: inputs.longitude,
+        images: images,
+        desc: value,
+        utilities: inputs.utilities,
+        pet: inputs.pet,
+        income: inputs.income,
+        size: size,
+        school: safeParseFloat(inputs.school),
+        bus: safeParseFloat(inputs.bus),
+        restaurant: safeParseFloat(inputs.restaurant),
+      };
+
+      const res = await apiRequest.put(`/posts/${id}`, updateData);
+      navigate("/" + id);
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || "Something went wrong. Please try again.");
@@ -88,10 +116,30 @@ function NewPostPage() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="editPostPage">
+        <div className="formContainer">
+          <div className="loading">Loading post data...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!postData) {
+    return (
+      <div className="editPostPage">
+        <div className="formContainer">
+          <div className="error">Post not found or you don't have permission to edit it.</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="newPostPage">
+    <div className="editPostPage">
       <div className="formContainer">
-        <h1>Create New Property Listing</h1>
+        <h1>Edit Property Listing</h1>
         <div className="wrapper">
           <form onSubmit={handleSubmit}>
             {/* Basic Information */}
@@ -102,6 +150,7 @@ function NewPostPage() {
                 name="title" 
                 type="text" 
                 placeholder="Enter property title"
+                defaultValue={postData.title}
                 required 
               />
             </div>
@@ -113,9 +162,10 @@ function NewPostPage() {
                 name="price" 
                 type="number" 
                 placeholder="Enter price in rupees"
-                min="1"
+                min="0"
                 max="10000000000"
-                step="1"
+                step="1000"
+                defaultValue={postData.price}
                 title="Maximum price: ₹10,000,000,000 (10 billion)"
                 required 
               />
@@ -123,7 +173,7 @@ function NewPostPage() {
 
             <div className="item">
               <label htmlFor="type">Listing Type</label>
-              <select name="type" required>
+              <select name="type" defaultValue={postData.type} required>
                 <option value="rent">For Rent</option>
                 <option value="buy">For Sale</option>
               </select>
@@ -131,7 +181,7 @@ function NewPostPage() {
 
             <div className="item">
               <label htmlFor="property">Property Type</label>
-              <select name="property" required>
+              <select name="property" defaultValue={postData.property} required>
                 <option value="apartment">Apartment</option>
                 <option value="house">House</option>
                 <option value="condo">Condo</option>
@@ -147,6 +197,7 @@ function NewPostPage() {
                 name="address" 
                 type="text" 
                 placeholder="Enter street address"
+                defaultValue={postData.address}
                 required 
               />
             </div>
@@ -158,6 +209,7 @@ function NewPostPage() {
                 name="city" 
                 type="text" 
                 placeholder="Enter city"
+                defaultValue={postData.city}
                 required 
               />
             </div>
@@ -169,6 +221,7 @@ function NewPostPage() {
                 name="latitude" 
                 type="text" 
                 placeholder="Enter latitude coordinates"
+                defaultValue={postData.latitude}
                 required 
               />
             </div>
@@ -180,6 +233,7 @@ function NewPostPage() {
                 name="longitude" 
                 type="text" 
                 placeholder="Enter longitude coordinates"
+                defaultValue={postData.longitude}
                 required 
               />
             </div>
@@ -194,6 +248,7 @@ function NewPostPage() {
                 name="bedroom" 
                 type="number" 
                 placeholder="Number of bedrooms"
+                defaultValue={postData.bedroom}
                 title="Maximum: 20 bedrooms"
                 required 
               />
@@ -208,6 +263,7 @@ function NewPostPage() {
                 name="bathroom" 
                 type="number" 
                 placeholder="Number of bathrooms"
+                defaultValue={postData.bathroom}
                 title="Maximum: 20 bathrooms"
                 required 
               />
@@ -222,6 +278,7 @@ function NewPostPage() {
                 name="size" 
                 type="number" 
                 placeholder="Property size in square feet"
+                defaultValue={postData.postDetail?.size}
                 title="Maximum: 100,000,000 sqft"
                 required 
               />
@@ -230,7 +287,7 @@ function NewPostPage() {
             {/* Policies */}
             <div className="item">
               <label htmlFor="utilities">Utilities Policy</label>
-              <select name="utilities" required>
+              <select name="utilities" defaultValue={postData.postDetail?.utilities} required>
                 <option value="owner">Owner is responsible</option>
                 <option value="tenant">Tenant is responsible</option>
                 <option value="shared">Shared responsibility</option>
@@ -239,7 +296,7 @@ function NewPostPage() {
 
             <div className="item">
               <label htmlFor="pet">Pet Policy</label>
-              <select name="pet" required>
+              <select name="pet" defaultValue={postData.postDetail?.pet} required>
                 <option value="allowed">Pets Allowed</option>
                 <option value="not-allowed">No Pets</option>
               </select>
@@ -252,6 +309,7 @@ function NewPostPage() {
                 name="income"
                 type="text"
                 placeholder="e.g., 3x monthly rent"
+                defaultValue={postData.postDetail?.income}
               />
             </div>
 
@@ -265,6 +323,7 @@ function NewPostPage() {
                 name="school" 
                 type="number" 
                 placeholder="Distance to nearest school in meters"
+                defaultValue={postData.postDetail?.school}
               />
             </div>
 
@@ -277,6 +336,7 @@ function NewPostPage() {
                 name="bus" 
                 type="number" 
                 placeholder="Distance to nearest bus stop in meters"
+                defaultValue={postData.postDetail?.bus}
               />
             </div>
 
@@ -289,6 +349,7 @@ function NewPostPage() {
                 name="restaurant" 
                 type="number" 
                 placeholder="Distance to nearest restaurant in meters"
+                defaultValue={postData.postDetail?.restaurant}
               />
             </div>
 
@@ -315,8 +376,8 @@ function NewPostPage() {
               )}
               <div className="mobile-uploadSection">
                 <div className="uploadIcon">📷</div>
-                <div className="uploadText">Upload Property Images</div>
-                <div className="uploadHint">Click to add photos of your property</div>
+                <div className="uploadText">Update Property Images</div>
+                <div className="uploadHint">Click to add or replace photos</div>
                 <UploadWidget
                   uwConfig={{
                     multiple: true,
@@ -334,7 +395,15 @@ function NewPostPage() {
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Creating..." : "Create Listing"}
+              {isSubmitting ? "Updating..." : "Update Listing"}
+            </button>
+            
+            <button 
+              type="button"
+              className="cancelButton"
+              onClick={() => navigate(`/${id}`)}
+            >
+              Cancel
             </button>
             
             {error && <div className="error">{error}</div>}
@@ -355,8 +424,8 @@ function NewPostPage() {
 
         <div className="uploadSection">
           <div className="uploadIcon">📷</div>
-          <div className="uploadText">Upload Property Images</div>
-          <div className="uploadHint">Click to add photos of your property</div>
+          <div className="uploadText">Update Property Images</div>
+          <div className="uploadHint">Click to add or replace photos</div>
           <UploadWidget
             uwConfig={{
               multiple: true,
@@ -372,4 +441,4 @@ function NewPostPage() {
   );
 }
 
-export default NewPostPage;
+export default EditPostPage;

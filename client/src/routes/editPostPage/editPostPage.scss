@@ -1,6 +1,6 @@
 @import "../../responsive.scss";
 
-.newPostPage {
+.editPostPage {
   min-height: 100vh;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   padding: 32px 0;
@@ -51,6 +51,20 @@
         font-size: 2rem;
         margin-bottom: 24px;
       }
+    }
+
+    .loading, .error {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 1.1rem;
+      color: #64748b;
+    }
+
+    .error {
+      color: #dc2626;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 12px;
     }
 
     .wrapper {
@@ -298,19 +312,27 @@
           }
         }
 
-        .sendButton {
+        .sendButton, .cancelButton {
           grid-column: 1 / -1;
           padding: 18px 32px;
           border: none;
           border-radius: 12px;
-          background: linear-gradient(135deg, #1a3c40 0%, #3bb19b 100%);
-          color: #fff;
           font-size: 1.1rem;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.3s ease;
+          margin-top: 8px;
+
+          @include sm {
+            padding: 16px 24px;
+            font-size: 1rem;
+          }
+        }
+
+        .sendButton {
+          background: linear-gradient(135deg, #1a3c40 0%, #3bb19b 100%);
+          color: #fff;
           box-shadow: 0 4px 16px rgba(59, 177, 155, 0.2);
-          margin-top: 16px;
 
           &:hover {
             transform: translateY(-2px);
@@ -321,9 +343,21 @@
             transform: translateY(0);
           }
 
-          @include sm {
-            padding: 16px 24px;
-            font-size: 1rem;
+          &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+          }
+        }
+
+        .cancelButton {
+          background: #f1f5f9;
+          color: #64748b;
+          border: 2px solid #e2e8f0;
+
+          &:hover {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
           }
         }
 
@@ -398,7 +432,6 @@
         background: #f0fdfa;
       }
 
-      // Move upload button slightly downward
       .cloudinary-button {
         margin-top: 16px;
         padding: 12px 24px;

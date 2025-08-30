@@ -14,15 +14,15 @@
 
   @include sm {
     flex-direction: column;
-    height: calc(100vh - 75px);
-    padding: 16px;
-    gap: 12px;
+    height: calc(100vh - 20px);
+    padding: 12px;
+    gap: 8px;
   }
   
   @include xs {
-    padding: 12px;
-    gap: 8px;
-    height: calc(100vh - 75px);
+    padding: 8px;
+    gap: 6px;
+    height: calc(100vh - 15px);
   }
 
     &:has(.chatBox:not(:empty)) {
@@ -38,8 +38,8 @@
       
       @include sm {
         .messages {
-          flex: 0 0 30%;
-          min-height: 200px;
+          flex: 0 0 20%;
+          min-height: 140px;
         }
         .chatBox {
           flex: 1;
@@ -49,8 +49,8 @@
       
       @include xs {
         .messages {
-          flex: 0 0 25%;
-          min-height: 180px;
+          flex: 0 0 18%;
+          min-height: 120px;
         }
       }
     }
@@ -337,6 +337,18 @@
       padding: 10px 20px;
       background-color: white;
       gap: 15px;
+      
+      @include sm {
+        align-items: center;
+        padding: 12px 16px;
+        gap: 12px;
+      }
+      
+      @include xs {
+        align-items: center;
+        padding: 8px 12px;
+        gap: 8px;
+      }
 
       textarea {
         flex: 1;
@@ -359,11 +371,17 @@
         @include sm {
           font-size: 16px; // Prevent zoom on iOS
           padding: 10px 12px;
+          min-height: 44px;
+          max-height: 100px;
+          border-radius: 12px;
         }
         
         @include xs {
-          min-height: 44px;
+          min-height: 40px;
+          max-height: 90px;
           padding: 8px 10px;
+          border-radius: 10px;
+          font-size: 16px; // Prevent zoom on iOS
         }
       }
 
@@ -378,6 +396,17 @@
         transition: all 0.2s;
         min-width: 100px;
         min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .desktop-text {
+          display: block;
+        }
+        
+        .mobile-icon {
+          display: none;
+        }
 
         &:hover {
           background-color: darken(#f7c14b, 5%);
@@ -398,15 +427,39 @@
         }
         
         @include sm {
-          padding: 10px 20px;
-          min-width: 80px;
-          font-size: 0.9rem;
+          padding: 0;
+          min-width: 44px;
+          min-height: 44px;
+          border-radius: 50%;
+          font-size: 1.1rem;
+          font-weight: 600;
+          
+          .desktop-text {
+            display: none;
+          }
+          
+          .mobile-icon {
+            display: block;
+            transform: translateY(-1px);
+          }
         }
         
         @include xs {
-          padding: 8px 16px;
-          min-width: 70px;
-          font-size: 0.85rem;
+          padding: 0;
+          min-width: 40px;
+          min-height: 40px;
+          border-radius: 50%;
+          font-size: 1rem;
+          font-weight: 600;
+          
+          .desktop-text {
+            display: none;
+          }
+          
+          .mobile-icon {
+            display: block;
+            transform: translateY(-1px);
+          }
         }
       }
     }

@@ -258,23 +258,53 @@ export const updatePost = async (req, res) => {
       return res.status(403).json({ message: "Not authorized to update this post" });
     }
 
-    // Prepare the update data
-    const updateData = {
-      ...updates,
+    // Separate Post fields from PostDetail fields
+    const postFields = {
+      title: updates.title,
       price: updates.price ? parseInt(updates.price) : undefined,
+      address: updates.address,
+      city: updates.city,
       bedroom: updates.bedroom ? parseInt(updates.bedroom) : undefined,
       bathroom: updates.bathroom ? parseInt(updates.bathroom) : undefined,
+      type: updates.type,
+      property: updates.property,
+      latitude: updates.latitude,
+      longitude: updates.longitude,
+      images: updates.images,
     };
 
-    // If there's a description update, handle the postDetail update
-    if (updates.desc) {
-      updateData.postDetail = {
-        update: {
-          desc: updates.desc
-        }
-      };
-      delete updateData.desc;
-    }
+    // PostDetail fields
+    const postDetailFields = {
+      desc: updates.desc,
+      utilities: updates.utilities,
+      pet: updates.pet,
+      income: updates.income,
+      size: updates.size ? parseInt(updates.size) : undefined,
+      school: updates.school ? parseFloat(updates.school) : undefined,
+      bus: updates.bus ? parseFloat(updates.bus) : undefined,
+      restaurant: updates.restaurant ? parseFloat(updates.restaurant) : undefined,
+    };
+
+    // Remove undefined fields
+    Object.keys(postFields).forEach(key => {
+      if (postFields[key] === undefined) {
+        delete postFields[key];
+      }
+    });
+
+    Object.keys(postDetailFields).forEach(key => {
+      if (postDetailFields[key] === undefined) {
+        delete postDetailFields[key];
+      }
+    });
+
+    // Prepare the update data
+    const updateData = {
+      ...postFields,
+      postDetail: {
+        update: postDetailFields
+      }
+    };
 
     const updatedPost = await prisma.post.update({
       where: { id },
@@ -316,11 +346,18 @@ export const deletePost = async (req, res) => {
       return res.status(403).json({ message: "Not authorized to delete this post" });
     }
 
-    // Delete the post and its details
-    await prisma.postDetail.delete({
-      where: { id }
+    // Delete the post and all related records
+    // First delete any SavedPost records that reference this post
+    await prisma.savedPost.deleteMany({
+      where: { postId: id }
     });
 
+    // Then delete the PostDetail using postId reference
+    await prisma.postDetail.delete({
+      where: { postId: id }
+    });
+
+    // Finally delete the post itself
     await prisma.post.delete({
       where: { id }
     });

@@ -9,6 +9,10 @@ function Card({ item }) {
   const { currentUser } = useContext(AuthContext);
   const [isSaved, setIsSaved] = useState(item.isSaved || false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  
+  // Check if current user owns this post
+  const isOwner = currentUser && currentUser.id === item.userId;
 
   useEffect(() => {
     setIsSaved(item.isSaved || false);
@@ -29,6 +33,33 @@ function Card({ item }) {
 
     checkSavedStatus();
   }, [item.id, currentUser]);
+
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!window.confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
+      return;
+    }
+    
+    setIsDeleting(true);
+    try {
+      await apiRequest.delete(`/posts/${item.id}`);
+      // Reload the page or navigate to refresh the list
+      window.location.reload();
+    } catch (err) {
+      console.error('Error deleting post:', err);
+      alert('Failed to delete property. Please try again.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleEdit = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate(`/edit/${item.id}`);
+  };
   return (
     <Link to={`/${item.id}`} className="card">
       <div className="imageContainer">
@@ -80,6 +111,30 @@ function Card({ item }) {
           </div>
           
           <div className="icons" onClick={e => e.stopPropagation()}>
+            {/* Owner-only buttons */}
+            {isOwner && (
+              <>
+                <button 
+                  type="button"
+                  className="icon edit-btn" 
+                  title="Edit property"
+                  onClick={handleEdit}
+                >
+                  <span>✏️</span>
+                </button>
+                <button 
+                  type="button"
+                  className={`icon delete-btn ${isDeleting ? 'loading' : ''}`} 
+                  title="Delete property"
+                  onClick={handleDelete}
+                  disabled={isDeleting}
+                >
+                  <span>{isDeleting ? '⏳' : '🗑️'}</span>
+                </button>
+              </>
+            )}
+            
+            {/* Save button - show for all users */}
             <button 
               type="button"
               className={`icon ${isSaved ? 'saved' : ''} ${isLoading ? 'loading' : ''}`} 
@@ -109,30 +164,34 @@ function Card({ item }) {
             >
               <img src="/save.png" alt={isSaved ? "Unsave" : "Save"} />
             </button>
-            <button 
-              type="button"
-              className="icon" 
-              title="Contact agent"
-              onClick={async (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (!currentUser) {
-                  navigate("/login");
-                  return;
-                }
-                try {
-                  const res = await apiRequest.post("/chats", {
-                    receiverId: item.userId
-                  });
-               
-                  navigate("/profile", { state: { openChat: res.data.id } });
-                } catch (err) {
-                  console.error(err);
-                }
-              }}
-            >
-              <img src="/chat.png" alt="Chat" />
-            </button>
+            
+            {/* Chat button - show for non-owners only */}
+            {!isOwner && (
+              <button 
+                type="button"
+                className="icon" 
+                title="Contact agent"
+                onClick={async (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (!currentUser) {
+                    navigate("/login");
+                    return;
+                  }
+                  try {
+                    const res = await apiRequest.post("/chats", {
+                      receiverId: item.userId
+                    });
+                 
+                    navigate("/profile", { state: { openChat: res.data.id } });
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }}
+              >
+                <img src="/chat.png" alt="Chat" />
+              </button>
+            )}
           </div>
         </div>
       </div>

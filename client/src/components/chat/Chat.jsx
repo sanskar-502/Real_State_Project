@@ -224,7 +224,10 @@ function Chat({ chats }) {
                 e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
               }}
             ></textarea>
-            <button type="submit">Send</button>
+            <button type="submit">
+              <span className="desktop-text">Send</span>
+              <span className="mobile-icon">⮕</span>
+            </button>
           </form>
         </div>
       )}

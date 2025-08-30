@@ -13,7 +13,6 @@ export const verifyToken = (req, res, next) => {
     }
     
     console.log("Token payload:", payload);
-    // Set both user and userId for backward compatibility
     req.user = payload;
     req.userId = payload.id;
     

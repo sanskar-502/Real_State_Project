@@ -28,10 +28,9 @@ app.use("/api/chats", chatRoute);
 app.use("/api/messages", messageRoute);
 app.use("/api/geocode", geocodeRoute);
 
-// 404 Handler - Must be after all routes
 app.use(notFoundHandler);
 
-// Global Error Handler - Must be last
+
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 8800;

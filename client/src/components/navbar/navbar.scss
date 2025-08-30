@@ -10,6 +10,7 @@ nav {
   justify-content: space-between;
   align-items: center;
   padding: 0 32px;
+  overflow: visible; // Ensure notifications don't get clipped
 
   @include md {
     padding: 0 16px;
@@ -122,6 +123,14 @@ nav {
 
       .profileImageWrapper {
         position: relative;
+        // Add padding to ensure notification doesn't get cut off
+        padding: 8px;
+        margin: -8px; // Negative margin to maintain original sizing
+        
+        @include sm {
+          padding: 6px;
+          margin: -6px;
+        }
         
         .profileImageLink {
           position: relative;
@@ -131,7 +140,7 @@ nav {
           cursor: pointer;
           transition: transform 0.2s ease;
           border-radius: 50%;
-          overflow: hidden;
+          overflow: visible; // Changed from hidden to visible
           
           &:hover {
             transform: scale(1.05);
@@ -160,6 +169,8 @@ nav {
             font-size: 12px;
             font-weight: bold;
             z-index: 10;
+            border: 2px solid white; // Add white border for better visibility
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); // Add shadow for depth
             
             @include sm {
               width: 20px;
@@ -167,6 +178,16 @@ nav {
               font-size: 10px;
               top: -6px;
               right: -6px;
+              border: 1px solid white;
+            }
+            
+            // Mobile-only notifications (show on profile photo in mobile)
+            &.mobile-only {
+              display: none;
+              
+              @include sm {
+                display: flex;
+              }
             }
           }
         }
@@ -212,6 +233,17 @@ nav {
           display: flex;
           align-items: center;
           justify-content: center;
+          font-size: 12px;
+          font-weight: bold;
+          
+          // Desktop-only notifications (show on profile button in desktop)
+          &.desktop-only {
+            display: flex;
+            
+            @include sm {
+              display: none;
+            }
+          }
         }
 
         // Hide the yellow profile button on mobile

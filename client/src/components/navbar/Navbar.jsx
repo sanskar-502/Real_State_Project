@@ -33,12 +33,12 @@ function Navbar() {
             <div className="profileImageWrapper">
               <Link to="/profile" className="profileImageLink">
                 <img src={currentUser.avatar || "/noavatar.jpg"} alt="Profile" />
-                {number > 0 && <div className="notification">{number}</div>}
+                {number > 0 && <div className="notification mobile-only">{number}</div>}
               </Link>
             </div>
             <span>{currentUser.username}</span>
             <Link to="/profile" className="profile">
-              {number > 0 && <div className="notification">{number}</div>}
+              {number > 0 && <div className="notification desktop-only">{number}</div>}
               <span>Profile</span>
             </Link>
           </div>

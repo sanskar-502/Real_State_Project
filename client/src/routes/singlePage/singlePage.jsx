@@ -12,6 +12,16 @@ function SinglePage() {
   const [saved, setSaved] = useState(post.isSaved);
   const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Handle case where post or postDetail is null
+  if (!post) {
+    return <div>Post not found</div>;
+  }
+  
+  if (!post.postDetail) {
+    return <div>Post details not available</div>;
+  }
 
   const handleSendMessage = async () => {
     if (!currentUser) {
@@ -40,6 +50,27 @@ function SinglePage() {
     }
   };
 
+  const handleEdit = () => {
+    navigate(`/edit/${post.id}`);
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
+      return;
+    }
+    
+    setIsDeleting(true);
+    try {
+      await apiRequest.delete(`/posts/${post.id}`);
+      navigate('/profile'); // Redirect to profile after deletion
+    } catch (err) {
+      console.error('Error deleting post:', err);
+      alert('Failed to delete property. Please try again.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="singlePage">
       <div className="details">
@@ -63,7 +94,7 @@ function SinglePage() {
             <div
               className="bottom"
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(post.postDetail.desc),
+                __html: DOMPurify.sanitize(post.postDetail?.desc || "No description available"),
               }}
             ></div>
           </div>
@@ -77,7 +108,7 @@ function SinglePage() {
               <img src="/utility.png" alt="" />
               <div className="featureText">
                 <span>Utilities</span>
-                {post.postDetail.utilities === "owner" ? (
+                {post.postDetail?.utilities === "owner" ? (
                   <p>Owner is responsible</p>
                 ) : (
                   <p>Tenant is responsible</p>
@@ -88,7 +119,7 @@ function SinglePage() {
               <img src="/pet.png" alt="" />
               <div className="featureText">
                 <span>Pet Policy</span>
-                {post.postDetail.pet === "allowed" ? (
+                {post.postDetail?.pet === "allowed" ? (
                   <p>Pets Allowed</p>
                 ) : (
                   <p>Pets not Allowed</p>
@@ -99,7 +130,7 @@ function SinglePage() {
               <img src="/fee.png" alt="" />
               <div className="featureText">
                 <span>Income Policy</span>
-                <p>{post.postDetail.income}</p>
+                <p>{post.postDetail?.income || "Not specified"}</p>
               </div>
             </div>
           </div>
@@ -107,7 +138,7 @@ function SinglePage() {
           <div className="sizes">
             <div className="size">
               <img src="/size.png" alt="" />
-              <span>{post.postDetail.size} sqft</span>
+              <span>{post.postDetail?.size || 0} sqft</span>
             </div>
             <div className="size">
               <img src="/bed.png" alt="" />
@@ -125,9 +156,9 @@ function SinglePage() {
               <div className="featureText">
                 <span>School</span>
                 <p>
-                  {post.postDetail.school > 999
-                    ? post.postDetail.school / 1000 + "km"
-                    : post.postDetail.school + "m"}{" "}
+                  {(post.postDetail?.school || 0) > 999
+                    ? (post.postDetail?.school || 0) / 1000 + "km"
+                    : (post.postDetail?.school || 0) + "m"}{" "}
                   away
                 </p>
               </div>
@@ -136,14 +167,14 @@ function SinglePage() {
               <img src="/pet.png" alt="" />
               <div className="featureText">
                 <span>Bus Stop</span>
-                <p>{post.postDetail.bus}m away</p>
+                <p>{post.postDetail?.bus || 0}m away</p>
               </div>
             </div>
             <div className="feature">
               <img src="/fee.png" alt="" />
               <div className="featureText">
                 <span>Restaurant</span>
-                <p>{post.postDetail.restaurant}m away</p>
+                <p>{post.postDetail?.restaurant || 0}m away</p>
               </div>
             </div>
           </div>
@@ -152,15 +183,36 @@ function SinglePage() {
             <Map items={[post]} />
           </div>
           <div className="buttons">
-            <button onClick={handleSendMessage}>
-              <img src="/chat.png" alt="" />
-              Send a Message
-            </button>
+            {/* Owner-only buttons */}
+            {post.isOwner && (
+              <>
+                <button onClick={handleEdit} className="edit-button">
+                  <span>✏️</span>
+                  Edit Property
+                </button>
+                <button 
+                  onClick={handleDelete} 
+                  className="delete-button"
+                  disabled={isDeleting}
+                >
+                  <span>{isDeleting ? '⏳' : '🗑️'}</span>
+                  {isDeleting ? "Deleting..." : "Delete Property"}
+                </button>
+              </>
+            )}
+            
+            {/* Chat button - show for non-owners only */}
+            {!post.isOwner && (
+              <button onClick={handleSendMessage}>
+                <img src="/chat.png" alt="" />
+                Send a Message
+              </button>
+            )}
+            
+            {/* Save button - show for all users */}
             <button
               onClick={handleSave}
-              style={{
-                backgroundColor: saved ? "#fece51" : "white",
-              }}
+              className={`save-button ${saved ? 'saved' : ''}`}
             >
               <img src="/save.png" alt="" />
               {saved ? "Place Saved" : "Save the Place"}
