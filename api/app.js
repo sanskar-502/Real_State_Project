@@ -28,6 +28,11 @@ app.use("/api/chats", chatRoute);
 app.use("/api/messages", messageRoute);
 app.use("/api/geocode", geocodeRoute);
 
+// Health check endpoint for UptimeRobot
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", message: "Server is healthy" });
+});
+
 app.use(notFoundHandler);
 
 
