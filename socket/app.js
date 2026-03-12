@@ -8,12 +8,28 @@ const PORT = process.env.PORT || 4000;
 import { createServer } from "http";
 
 const httpServer = createServer((req, res) => {
-  if (req.method === "GET" && req.url === "/health") {
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ status: "ok", message: "Socket server is healthy" }));
+  // Parse URL without query string
+  const pathname = req.url.split('?')[0];
+  
+  if (req.method === "GET" && pathname === "/health") {
+    try {
+      res.writeHead(200, { 
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "no-cache"
+      });
+      res.end(JSON.stringify({ 
+        status: "ok", 
+        message: "Socket server is healthy",
+        timestamp: new Date().toISOString()
+      }));
+    } catch (err) {
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ status: "error", message: err.message }));
+    }
   } else {
-    res.writeHead(404);
-    res.end();
+    res.writeHead(404, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ status: "error", message: "Not Found" }));
   }
 });
 
