@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import apiRequest from "../../lib/apiRequest";
 
-// --- FIX FOR LEAFLET ICONS START ---
+
 import L from 'leaflet';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
@@ -19,7 +19,6 @@ L.Icon.Default.mergeOptions({
   iconRetinaUrl,
   shadowUrl,
 });
-// --- FIX FOR LEAFLET ICONS END ---
 
 
 function ChangeView({ center, zoom }) {
@@ -80,7 +79,6 @@ function Map({ items }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {items.map((item) => (
-        // ✅ CRITICAL FIX: Convert string coordinates to numbers
         <Pin item={{
             ...item,
             latitude: parseFloat(item.latitude),

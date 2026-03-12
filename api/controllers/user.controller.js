@@ -1,8 +1,6 @@
 import prisma from "../lib/prisma.js";
 import bcrypt from "bcrypt";
 
-
-
 export const checkSavedPost = async (req, res) => {
   const postId = req.params.postId;
   const userId = req.userId;

@@ -60,6 +60,8 @@ function Card({ item }) {
     e.stopPropagation();
     navigate(`/edit/${item.id}`);
   };
+
+  
   return (
     <Link to={`/${item.id}`} className="card">
       <div className="imageContainer">
