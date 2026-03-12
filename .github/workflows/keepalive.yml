@@ -1,0 +1,19 @@
+name: Keep Socket Server Alive
+
+on:
+  schedule:
+    # Run every 5 minutes
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Socket Server Health Endpoint
+        run: |
+          curl -f https://real-estate-socket-45z9.onrender.com/health || true
+      
+      - name: Ping API Server Health Endpoint
+        run: |
+          curl -f https://real-estate-api-ixdm.onrender.com/health || true
