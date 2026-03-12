@@ -42,7 +42,7 @@ export const login = async (req, res) => {
     if (!isPasswordValid)
       return res.status(400).json({ message: "Invalid Credentials!" });
 
-    const age = 1000 * 60 * 60 * 24 * 7; 
+    const age = 1000 * 60 * 60 * 24 * 7; // 7 days in milliseconds
 
     const token = jwt.sign(
       {
@@ -51,7 +51,7 @@ export const login = async (req, res) => {
         isAdmin: false,
       },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: age }
+      { expiresIn: "7d" } // Use string format for expiration
     );
 
     const { password: userPassword, ...userInfo } = user;
