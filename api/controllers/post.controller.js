@@ -142,7 +142,8 @@ export const getPost = async (req, res) => {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    const token = req.cookies?.token;
+    const authHeader = req.headers.authorization;
+    const token = req.cookies?.token || (authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null);
     let userId = null;
     let isSaved = false;
 
@@ -214,7 +215,7 @@ export const addPost = async (req, res) => {
     console.error("Full error details:", {
       error: err,
       userId: req.userId,
-      token: req.cookies.token
+      token: req.cookies.token || req.headers.authorization
     });
     res.status(500).json({ 
       message: "Failed to create post", 
